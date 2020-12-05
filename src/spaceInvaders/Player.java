@@ -32,4 +32,10 @@ public class Player extends Figure implements Serializable {
     public int getSpeed() {
         return speed;
     }
+
+    @Override
+    protected void shoot(Bullet bullet) {
+        for (BulletListener bl : bulletListeners)
+            bl.addBullet(bullet);
+    }
 }

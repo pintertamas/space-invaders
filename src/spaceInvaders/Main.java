@@ -1,20 +1,25 @@
 package spaceInvaders;
 
+import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class Main extends Application implements ChangeWindow {
 
-    public enum State{menu, load, game, gameEnd}
+    public enum State {menu, load, game, gameEnd}
+
     private State state = State.menu;
 
     @Override
-    public void start(Stage primaryStage){
+    public void start(Stage primaryStage) {
         int screenWidth = 900;
         int screenHeight = 600;
         Group root = new Group();
@@ -58,6 +63,13 @@ public class Main extends Application implements ChangeWindow {
                 }
             }
         }.start();
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
+            for (Invader invader : game.invaders().getInvaders()) {
+                invader.shoot(new EnemyBullet(invader.getPosX() + invader.getSize() / 2.f - screenHeight / 60.f, 300, screenHeight / 30));
+            }
+        }));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
     }
 
     @Override

@@ -2,8 +2,8 @@ package spaceInvaders;
 
 public class EnemyBullet extends Bullet {
 
-    EnemyBullet(float posX, float posY, int size, int screenHeight) {
-        super(posX, posY, size, screenHeight);
+    EnemyBullet(float posX, float posY, int size) {
+        super(posX, posY, size);
     }
 
     @Override

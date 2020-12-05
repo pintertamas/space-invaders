@@ -6,7 +6,7 @@ public class Figure {
     private float posX;
     private float posY;
     private final int size;
-    private final ArrayList<BulletListener> bulletListeners;
+    protected final ArrayList<BulletListener> bulletListeners;
 
     public Figure(float posX, float posY, int size) {
         this.posX = posX;
@@ -39,8 +39,7 @@ public class Figure {
         bulletListeners.add(listener);
     }
 
-    protected void shoot(int screenHeight) {
-        Bullet bullet = new PlayerBullet(getPosX() + getSize() / 2.f - 10, getPosY() - screenHeight/60.f, screenHeight/30, screenHeight);
+    protected void shoot(Bullet bullet) {
         for (BulletListener bl : bulletListeners)
             bl.addBullet(bullet);
     }

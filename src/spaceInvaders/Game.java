@@ -1,5 +1,8 @@
 package spaceInvaders;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -10,6 +13,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.util.Duration;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -30,12 +34,19 @@ public class Game implements Serializable, BulletListener {
         this.invaders = new Invaders();
         this.player = new Player(screenWidth / 2.f - 25, screenHeight - 60, 50);
         player.addBulletListener(this);
+        registerBulletListeners();
         this.bullets = new Bullets();
         this.windowListeners = new ArrayList<>();
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.scene = scene;
         spawnInvaders();
+    }
+
+    private void registerBulletListeners() {
+        for (Invader invader : invaders.getInvaders()) {
+            invader.addBulletListener(this);
+        }
     }
 
     public void showGame(Group root, Canvas canvas, GraphicsContext gc) {
@@ -46,12 +57,12 @@ public class Game implements Serializable, BulletListener {
         drawBullets(gc);
         updateInvaders();
         updateBullets();
-        try{
+        try {
             Thread.sleep(10);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
+        System.out.println(bullets.getBullets().size());
     }
 
     private void setBackground(Group root, Canvas canvas, GraphicsContext gc) {
@@ -109,7 +120,7 @@ public class Game implements Serializable, BulletListener {
             } else if (code == KeyCode.D && player.getPosX() + player.getSize() + 10 < screenWidth - 10) {
                 player.moveRight();
             } else if (code == KeyCode.SPACE) {
-                player.shoot(screenHeight);
+                player.shoot(new PlayerBullet(player.getPosX() + player.getSize() / 2.f - 15, player.getPosY() - screenHeight / 60.f, screenHeight / 30));
             }
         });
     }
@@ -171,5 +182,9 @@ public class Game implements Serializable, BulletListener {
     @Override
     public void addBullet(Bullet bullet) {
         bullets.addBullet(bullet);
+    }
+
+    public Invaders invaders() {
+        return invaders;
     }
 }

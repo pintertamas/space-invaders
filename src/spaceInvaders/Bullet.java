@@ -7,7 +7,7 @@ public abstract class Bullet {
     protected int speed;
     protected boolean isAlive;
 
-    Bullet(float posX, float posY, int size, int screenHeight) {
+    Bullet(float posX, float posY, int size) {
         this.isAlive = true;
         this.posX = posX;
         this.posY = posY;

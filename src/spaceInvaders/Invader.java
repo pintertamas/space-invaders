@@ -16,21 +16,11 @@ public class Invader extends Figure implements Serializable {
         Random random = new Random();
         int randomImageIndex = random.nextInt(4) + 1;
         switch (randomImageIndex) {
-            case 1 -> {
-                setImg(new Image("icons/alien1.png", getSize(), getSize(), true, true));
-            }
-            case 2 -> {
-                setImg(new Image("icons/alien2.png", getSize(), getSize(), true, true));
-            }
-            case 3 -> {
-                setImg(new Image("icons/alien3.png", getSize(), getSize(), true, true));
-            }
-            case 4 -> {
-                setImg(new Image("icons/alien4.png", getSize(), getSize(), true, true));
-            }
-            case 5 -> {
-                setImg(new Image("icons/alien5.png", getSize(), getSize(), true, true));
-            }
+            case 1 -> setImg(new Image("icons/alien1.png", getSize(), getSize(), true, true));
+            case 2 -> setImg(new Image("icons/alien2.png", getSize(), getSize(), true, true));
+            case 3 -> setImg(new Image("icons/alien3.png", getSize(), getSize(), true, true));
+            case 4 -> setImg(new Image("icons/alien4.png", getSize(), getSize(), true, true));
+            case 5 -> setImg(new Image("icons/alien5.png", getSize(), getSize(), true, true));
 
         }
     }
@@ -53,5 +43,11 @@ public class Invader extends Figure implements Serializable {
 
     public Image getImg() {
         return img;
+    }
+
+    @Override
+    protected void shoot(Bullet bullet) {
+        for (BulletListener bl : bulletListeners)
+            bl.addBullet(bullet);
     }
 }
