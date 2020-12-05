@@ -12,4 +12,12 @@ public class Bullets {
     public ArrayList<Bullet> getBullets() {
         return bullets;
     }
+
+    public void addBullet(Bullet bullet) {
+        bullets.add(bullet);
+    }
+
+    public void removeBullet(Bullet bullet) {
+        bullets.remove(bullet);
+    }
 }

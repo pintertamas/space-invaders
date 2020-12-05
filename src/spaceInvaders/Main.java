@@ -37,7 +37,7 @@ public class Main extends Application implements ChangeWindow {
         Menu menu = new Menu(screenWidth, screenHeight);
         menu.addListener(this);
         Game game = new Game(scene, screenWidth, screenHeight);
-        game.addListener(this);
+        game.addWindowListener(this);
         new AnimationTimer() {
             @Override
             public void handle(long l) {
@@ -51,11 +51,6 @@ public class Main extends Application implements ChangeWindow {
                     case game:
                         //System.out.println("Game");
                         game.showGame(root, canvas, gc);
-                        try {
-                            Thread.sleep(10);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
                         break;
                     case gameEnd:
                         //System.out.println("GameEnd");

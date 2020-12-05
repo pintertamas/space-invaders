@@ -1,33 +1,37 @@
 package spaceInvaders;
 
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Random;
 
-public class Game implements Serializable {
-    private Invaders invaders;
-    private Player player;
-    private Bullets bullets;
+public class Game implements Serializable, BulletListener {
+    private final Invaders invaders;
+    private final Player player;
+    private final Bullets bullets;
     private int currentLevel;
     private final int screenWidth;
     private final int screenHeight;
-    private Scene scene;
-    private final ArrayList<ChangeWindow> listeners;
+    private final Scene scene;
+    private final ArrayList<ChangeWindow> windowListeners;
 
     public Game(Scene scene, int screenWidth, int screenHeight) {
         this.currentLevel = 1;
         this.invaders = new Invaders();
         this.player = new Player(screenWidth / 2.f - 25, screenHeight - 60, 50);
+        player.addBulletListener(this);
         this.bullets = new Bullets();
-        this.listeners = new ArrayList<>();
+        this.windowListeners = new ArrayList<>();
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.scene = scene;
@@ -39,8 +43,15 @@ public class Game implements Serializable {
         movePlayer();
         drawPlayer(gc);
         drawInvaders(gc);
-        updateBullets();
+        drawBullets(gc);
         updateInvaders();
+        updateBullets();
+        try{
+            Thread.sleep(10);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     private void setBackground(Group root, Canvas canvas, GraphicsContext gc) {
@@ -73,29 +84,7 @@ public class Game implements Serializable {
     private void drawInvaders(GraphicsContext gc) {
         for (Invader invader : invaders.getInvaders()) {
             if (invader.isAlive()) {
-                switch (currentLevel) {
-                    case 1 -> {
-                        Image alien1 = new Image("icons/alien1.png", invader.getSize(), invader.getSize(), true, true);
-                        gc.drawImage(alien1, invader.getPosX(), invader.getPosY());
-                    }
-                    case 2 -> {
-                        Image alien2 = new Image("icons/alien2.png", invader.getSize(), invader.getSize(), true, true);
-                        gc.drawImage(alien2, invader.getPosX(), invader.getPosY());
-                    }
-                    case 3 -> {
-                        Image alien3 = new Image("icons/alien3.png", invader.getSize(), invader.getSize(), true, true);
-                        gc.drawImage(alien3, invader.getPosX(), invader.getPosY());
-                    }case 4 -> {
-                        Image alien4 = new Image("icons/alien4.png", invader.getSize(), invader.getSize(), true, true);
-                        gc.drawImage(alien4, invader.getPosX(), invader.getPosY());
-                    }
-                    case 5 -> {
-                        Image alien5 = new Image("icons/alien5.png", invader.getSize(), invader.getSize(), true, true);
-                        gc.drawImage(alien5, invader.getPosX(), invader.getPosY());
-                    }
-
-                }
-
+                gc.drawImage(invader.getImg(), invader.getPosX(), invader.getPosY());
             }
         }
     }
@@ -105,37 +94,49 @@ public class Game implements Serializable {
         gc.drawImage(image, player.getPosX(), player.getPosY());
     }
 
+    private void drawBullets(GraphicsContext gc) {
+        for (Bullet bullet : bullets.getBullets()) {
+            Image image = new Image("icons/bullet.png", bullet.getSize(), bullet.getSize(), true, true);
+            gc.drawImage(image, bullet.getPosX(), bullet.getPosY());
+        }
+    }
+
     private void movePlayer() {
         scene.setOnKeyPressed(keyEvent -> {
             KeyCode code = keyEvent.getCode();
             if (code == KeyCode.A && player.getPosX() - 10 >= 10) {
-                player.setPosX(player.getPosX() - 10);
+                player.moveLeft();
             } else if (code == KeyCode.D && player.getPosX() + player.getSize() + 10 < screenWidth - 10) {
-                player.setPosX(player.getPosX() + 10);
-            }
-            if (code == KeyCode.SPACE) {
-                player.shoot(true);
+                player.moveRight();
+            } else if (code == KeyCode.SPACE) {
+                player.shoot(screenHeight);
             }
         });
     }
 
     private void updateBullets() {
-        for (Bullet bullet : bullets.getBullets()) {
-            bullet.update();
-        }
+        if (bullets.getBullets().size() != 0)
+            for (int i = 0; i < bullets.getBullets().size(); i++) {
+                if (bullets.getBullets().get(i).isAlive)
+                    bullets.getBullets().get(i).update(screenHeight);
+                else {
+                    bullets.removeBullet(bullets.bullets.get(i));
+                }
+            }
     }
 
     private void updateInvaders() {
         for (Invader invader : invaders.getInvaders()) {
             invader.update();
-            if (invader.getPosY() > player.getPosY())
-                invader.die();
             for (Bullet bullet : bullets.getBullets()) {
-                if (bulletInvaderCollision(bullet, invader))
+                if (bulletInvaderCollision(bullet, invader)) {
                     bullet.die();
+                    invader.die();
+                }
             }
             if (playerInvaderCollision(invader)) {
                 player.damage();
+                System.out.println(player.getHealth());
                 invader.die();
             }
         }
@@ -158,12 +159,17 @@ public class Game implements Serializable {
                 player.getPosY() + player.getSize() > invader.getPosY() + invader.getSize();
     }
 
-    public void addListener(ChangeWindow listener) {
-        listeners.add(listener);
+    public void addWindowListener(ChangeWindow listener) {
+        windowListeners.add(listener);
     }
 
     private void menu() {
-        for (ChangeWindow cw : listeners)
+        for (ChangeWindow cw : windowListeners)
             cw.changeWindow(Main.State.menu);
+    }
+
+    @Override
+    public void addBullet(Bullet bullet) {
+        bullets.addBullet(bullet);
     }
 }
