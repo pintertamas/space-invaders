@@ -1,4 +1,4 @@
-package sample;
+package spaceInvaders;
 
 import java.io.Serializable;
 

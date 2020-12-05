@@ -1,9 +1,8 @@
-package sample;
+package spaceInvaders;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Group;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -11,7 +10,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application implements ChangeWindow {
 
-    public enum State{menu, game, gameEnd}
+    public enum State{menu, load, game, gameEnd}
     private State state = State.menu;
 
     @Override
@@ -37,7 +36,7 @@ public class Main extends Application implements ChangeWindow {
     private void game(Group root, Canvas canvas, Scene scene, GraphicsContext gc, int screenWidth, int screenHeight) {
         Menu menu = new Menu(screenWidth, screenHeight);
         menu.addListener(this);
-        Game game = new Game(screenWidth, screenHeight);
+        Game game = new Game(scene, screenWidth, screenHeight);
         game.addListener(this);
         new AnimationTimer() {
             @Override
@@ -47,9 +46,16 @@ public class Main extends Application implements ChangeWindow {
                         //System.out.println("Menu");
                         menu.showMenu(root, canvas, gc);
                         break;
+                    case load:
+                        break;
                     case game:
                         //System.out.println("Game");
                         game.showGame(root, canvas, gc);
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         break;
                     case gameEnd:
                         //System.out.println("GameEnd");

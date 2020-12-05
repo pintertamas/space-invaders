@@ -1,12 +1,10 @@
-package sample;
+package spaceInvaders;
 
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -39,7 +37,9 @@ public class Menu {
         Button exitButton = new Button("EXIT");
 
         startButton.setOnMousePressed(mouseEvent -> startGame());
-        loadButton.setOnMousePressed(mouseEvent -> System.out.println("load button clicked"));
+        loadButton.setOnMousePressed(mouseEvent -> {
+            System.out.println("loadGame");
+        });
         exitButton.setOnMousePressed(mouseEvent -> System.exit(0));
 
         HBox buttons = new HBox(25);
