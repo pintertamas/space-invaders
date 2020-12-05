@@ -37,13 +37,14 @@ public class Game {
         for (int i = 0; i < screenHeight; i+=screenHeight/10) {
             Line line = new Line(0, i, screenWidth, i);
             line.setId("line");
+            line.setOpacity(0.2*(float)screenHeight/(screenHeight-i));
             root.getChildren().add(line);
         }
 
         for (float i = screenWidth/3.f; i < screenWidth; i+=screenWidth/100.f) {
             float tmp = (screenWidth/3.f/(i-screenWidth/3.f))*screenWidth;
             Line line = new Line(i, 0, (screenWidth*2.5-tmp), screenHeight);
-            line.setId("line");
+            line.setId("lineVertical");
             root.getChildren().add(line);
         }
     }

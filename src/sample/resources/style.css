@@ -22,5 +22,8 @@
 
 #line {
     -fx-stroke: #a9ff00;
-    -fx-fill: #a9ff00;
+}
+
+#lineVertical {
+    -fx-stroke: linear-gradient(rgb(30, 30, 30), rgb(80, 255, 0));
 }
