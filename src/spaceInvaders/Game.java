@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class Game implements Serializable {
     private Invaders invaders;
     private Player player;
+    private Bullets bullets;
     private int currentLevel;
     private final int screenWidth;
     private final int screenHeight;
@@ -25,6 +26,7 @@ public class Game implements Serializable {
         this.currentLevel = 1;
         this.invaders = new Invaders();
         this.player = new Player(screenWidth / 2.f - 25, screenHeight - 60, 50);
+        this.bullets = new Bullets();
         this.listeners = new ArrayList<>();
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
@@ -37,6 +39,8 @@ public class Game implements Serializable {
         movePlayer();
         drawPlayer(gc);
         drawInvaders(gc);
+        updateBullets();
+        updateInvaders();
     }
 
     private void setBackground(Group root, Canvas canvas, GraphicsContext gc) {
@@ -68,8 +72,10 @@ public class Game implements Serializable {
 
     private void drawInvaders(GraphicsContext gc) {
         for (Invader invader : invaders.getInvaders()) {
-            Image alien1 = new Image("icons/alien2.png", invader.getSize(), invader.getSize(), true, true);
-            gc.drawImage(alien1, invader.getPosX(), invader.getPosY());
+            if (invader.isAlive()) {
+                Image alien1 = new Image("icons/alien2.png", invader.getSize(), invader.getSize(), true, true);
+                gc.drawImage(alien1, invader.getPosX(), invader.getPosY());
+            }
         }
     }
 
@@ -81,15 +87,54 @@ public class Game implements Serializable {
     private void movePlayer() {
         scene.setOnKeyPressed(keyEvent -> {
             KeyCode code = keyEvent.getCode();
-            if (code == KeyCode.A && player.isAbleToMove(screenWidth)) {
+            if (code == KeyCode.A && player.getPosX() - 10 >= 10) {
                 player.setPosX(player.getPosX() - 10);
-            } else if (code == KeyCode.D && player.isAbleToMove(screenWidth)) {
+            } else if (code == KeyCode.D && player.getPosX() + player.getSize() + 10 < screenWidth - 10) {
                 player.setPosX(player.getPosX() + 10);
             }
             if (code == KeyCode.SPACE) {
                 player.shoot(true);
             }
         });
+    }
+
+    private void updateBullets() {
+        for (Bullet bullet : bullets.getBullets()) {
+            bullet.update();
+        }
+    }
+
+    private void updateInvaders() {
+        for (Invader invader : invaders.getInvaders()) {
+            invader.update();
+            if (invader.getPosY() > player.getPosY())
+                invader.die();
+            for (Bullet bullet : bullets.getBullets()) {
+                if (bulletInvaderCollision(bullet, invader))
+                    bullet.die();
+            }
+            if (playerInvaderCollision(invader)) {
+                player.damage();
+                invader.die();
+            }
+        }
+    }
+
+    private boolean bulletInvaderCollision(Bullet bullet, Invader invader) {
+        if (bullet.isAlive()) {
+            return bullet.getPosX() > invader.getPosX() &&
+                    bullet.getPosX() + bullet.getSize() < invader.getPosX() + invader.getSize() &&
+                    bullet.getPosY() > invader.getPosY() &&
+                    bullet.getPosY() + bullet.getSize() > invader.getPosY() + invader.getSize();
+        }
+        return false;
+    }
+
+    private boolean playerInvaderCollision(Invader invader) {
+        return player.getPosX() > invader.getPosX() &&
+                player.getPosX() + player.getSize() < invader.getPosX() + invader.getSize() &&
+                player.getPosY() > invader.getPosY() &&
+                player.getPosY() + player.getSize() > invader.getPosY() + invader.getSize();
     }
 
     public void addListener(ChangeWindow listener) {

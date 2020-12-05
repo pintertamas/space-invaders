@@ -27,7 +27,15 @@ public class Figure {
         this.posX = posX;
     }
 
-    protected void shoot(boolean direction) {
+    public void setPosY(float posY) {
+        this.posY = posY;
+    }
 
+    protected void shoot(boolean direction) {
+        if (direction) {
+            System.out.println("true");
+        } else {
+            System.out.println("false");
+        }
     }
 }

@@ -14,8 +14,4 @@ public class Player extends Figure implements Serializable {
     public void damage(){
         this.health--;
     }
-
-    public boolean isAbleToMove(int screenWidth) {
-        return (this.getPosX() - 10 > 10 && this.getPosX() + 10 < screenWidth - 10);
-    }
 }
