@@ -73,8 +73,29 @@ public class Game implements Serializable {
     private void drawInvaders(GraphicsContext gc) {
         for (Invader invader : invaders.getInvaders()) {
             if (invader.isAlive()) {
-                Image alien1 = new Image("icons/alien2.png", invader.getSize(), invader.getSize(), true, true);
-                gc.drawImage(alien1, invader.getPosX(), invader.getPosY());
+                switch (currentLevel) {
+                    case 1 -> {
+                        Image alien1 = new Image("icons/alien1.png", invader.getSize(), invader.getSize(), true, true);
+                        gc.drawImage(alien1, invader.getPosX(), invader.getPosY());
+                    }
+                    case 2 -> {
+                        Image alien2 = new Image("icons/alien2.png", invader.getSize(), invader.getSize(), true, true);
+                        gc.drawImage(alien2, invader.getPosX(), invader.getPosY());
+                    }
+                    case 3 -> {
+                        Image alien3 = new Image("icons/alien3.png", invader.getSize(), invader.getSize(), true, true);
+                        gc.drawImage(alien3, invader.getPosX(), invader.getPosY());
+                    }case 4 -> {
+                        Image alien4 = new Image("icons/alien4.png", invader.getSize(), invader.getSize(), true, true);
+                        gc.drawImage(alien4, invader.getPosX(), invader.getPosY());
+                    }
+                    case 5 -> {
+                        Image alien5 = new Image("icons/alien5.png", invader.getSize(), invader.getSize(), true, true);
+                        gc.drawImage(alien5, invader.getPosX(), invader.getPosY());
+                    }
+
+                }
+
             }
         }
     }
