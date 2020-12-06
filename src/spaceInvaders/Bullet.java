@@ -1,5 +1,8 @@
 package spaceInvaders;
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+
 public abstract class Bullet {
     protected float posX;
     protected float posY;
@@ -40,5 +43,10 @@ public abstract class Bullet {
 
     public void die() {
         isAlive = false;
+    }
+
+    public void drawBullet(GraphicsContext gc) {
+        Image image = new Image("icons/bullet.png", getSize(), getSize(), true, true);
+        gc.drawImage(image, getPosX(), getPosY());
     }
 }

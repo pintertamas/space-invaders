@@ -1,5 +1,10 @@
 package spaceInvaders;
 
+import javafx.scene.Scene;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+
 import java.io.Serializable;
 
 public class Player extends Figure implements Serializable {
@@ -37,5 +42,23 @@ public class Player extends Figure implements Serializable {
     protected void shoot(Bullet bullet) {
         for (BulletListener bl : bulletListeners)
             bl.addBullet(bullet);
+    }
+
+    public void movePlayer(Scene scene, int screenWidth, int screenHeight) {
+        scene.setOnKeyPressed(keyEvent -> {
+            KeyCode code = keyEvent.getCode();
+            if (code == KeyCode.A && getPosX() - 10 >= 10) {
+                moveLeft();
+            } else if (code == KeyCode.D && getPosX() + getSize() + 10 < screenWidth - 10) {
+                moveRight();
+            } else if (code == KeyCode.SPACE) {
+                shoot(new PlayerBullet(getPosX() + getSize() / 2.f - 15, getPosY() - screenHeight / 60.f, screenHeight / 30));
+            }
+        });
+    }
+
+    public void drawPlayer(GraphicsContext gc) {
+        Image image = new Image("icons/player.png", getSize(), getSize(), true, true);
+        gc.drawImage(image, getPosX(), getPosY());
     }
 }

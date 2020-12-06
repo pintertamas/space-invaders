@@ -1,5 +1,6 @@
 package spaceInvaders;
 
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 import java.io.Serializable;
@@ -26,7 +27,7 @@ public class Invader extends Figure implements Serializable {
     }
 
     public void update() {
-        //this.setPosY(getPosY()+5);
+        this.setPosY(getPosY()+1);
     }
 
     public void die() {
@@ -49,5 +50,11 @@ public class Invader extends Figure implements Serializable {
     protected void shoot(Bullet bullet) {
         for (BulletListener bl : bulletListeners)
             bl.addBullet(bullet);
+    }
+
+    public void drawInvader(GraphicsContext gc) {
+        if (isAlive()) {
+            gc.drawImage(getImg(), getPosX(), getPosY());
+        }
     }
 }
