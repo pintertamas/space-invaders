@@ -1,12 +1,12 @@
 package spaceInvaders;
 
-import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
@@ -14,21 +14,20 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Game implements Serializable, BulletListener {
-    private final Invaders invaders;
-    private final Player player;
-    private final Bullets bullets;
+    private Invaders invaders;
+    private Player player;
+    private Bullets bullets;
     private int currentLevel;
-    private final int screenWidth;
-    private final int screenHeight;
-    private final Scene scene;
-    private final ArrayList<ChangeWindow> windowListeners;
+    private int screenWidth;
+    private int screenHeight;
+    private transient Scene scene;
+    private ArrayList<ChangeWindow> windowListeners;
 
     public Game(Scene scene, int screenWidth, int screenHeight) {
         this.currentLevel = 1;
         this.invaders = new Invaders();
         this.player = new Player(screenWidth / 2.f - 25, screenHeight - 60, 50);
         player.addBulletListener(this);
-
         this.bullets = new Bullets();
         this.windowListeners = new ArrayList<>();
         this.screenWidth = screenWidth;
@@ -40,11 +39,12 @@ public class Game implements Serializable, BulletListener {
 
     public void showGame(Group root, Canvas canvas, GraphicsContext gc) {
         setBackground(root, canvas, gc);
+        saveButton(root);
         player.movePlayer(scene, screenWidth, screenHeight);
-        player.drawPlayer(gc);
+        player.drawPlayer(root);
         invaders.killIfDead();
         invaders.killIfOutside(screenHeight);
-        invaders.drawInvaders(gc);
+        invaders.drawInvaders(root);
         bullets.drawBullets(gc);
         updateInvaders();
         bullets.updateBullets(screenHeight);
@@ -75,6 +75,17 @@ public class Game implements Serializable, BulletListener {
             line.setId("lineVertical");
             root.getChildren().add(line);
         }
+    }
+
+    private void saveButton(Group root) {
+        Button saveButton = new Button("SAVE");
+        saveButton.setId("saveButton");
+        HBox buttonAlignment = new HBox();
+        buttonAlignment.getChildren().add(saveButton);
+        buttonAlignment.setAlignment(Pos.CENTER);
+        buttonAlignment.setMinWidth(screenWidth);
+        saveButton.setOnMousePressed(keyEvent -> menu());
+        root.getChildren().add(buttonAlignment);
     }
 
     private void updateInvaders() {
@@ -122,6 +133,7 @@ public class Game implements Serializable, BulletListener {
     }
 
     private void menu() {
+        new Database().saveGame(this);
         for (ChangeWindow cw : windowListeners)
             cw.changeWindow(Main.State.menu);
     }
@@ -133,5 +145,42 @@ public class Game implements Serializable, BulletListener {
 
     public Invaders invaders() {
         return invaders;
+    }
+
+    //--------------------------------
+    public Invaders getInvaders() {
+        return invaders;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Bullets getBullets() {
+        return bullets;
+    }
+
+    public int getCurrentLevel() {
+        return currentLevel;
+    }
+
+    public int getScreenWidth() {
+        return screenWidth;
+    }
+
+    public int getScreenHeight() {
+        return screenHeight;
+    }
+
+    public Scene getScene() {
+        return scene;
+    }
+
+    public ArrayList<ChangeWindow> getWindowListeners() {
+        return windowListeners;
+    }
+
+    public void setGame(Game game) {
+
     }
 }

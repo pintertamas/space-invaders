@@ -3,7 +3,9 @@ package spaceInvaders;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public class EnemyBullet extends Bullet {
+import java.io.Serializable;
+
+public class EnemyBullet extends Bullet implements Serializable {
 
     EnemyBullet(float posX, float posY, int size) {
         super(posX, posY, size);

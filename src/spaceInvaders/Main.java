@@ -12,9 +12,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Main extends Application implements ChangeWindow {
+public class Main extends Application implements ChangeWindow, Serializable {
 
     public enum State {menu, load, game, gameEnd}
 
@@ -53,6 +54,9 @@ public class Main extends Application implements ChangeWindow {
                         menu.showMenu(root, canvas, gc);
                         break;
                     case load:
+                        System.out.println("load");
+
+                        state = State.game;
                         break;
                     case game:
                         game.showGame(root, canvas, gc);

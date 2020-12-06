@@ -10,13 +10,13 @@ public class Database {
         File f = new File("game.ser");
         if (f.exists()) {
             try {
-                Game game;
+                Game tmp;
                 FileInputStream fileIn = new FileInputStream("game.ser");
                 ObjectInputStream in = new ObjectInputStream(fileIn);
-                game = (Game) in.readObject();
+                tmp = (Game) in.readObject();
                 in.close();
                 fileIn.close();
-                return game;
+                return tmp;
             } catch (ClassNotFoundException | IOException i) {
                 i.printStackTrace();
             }

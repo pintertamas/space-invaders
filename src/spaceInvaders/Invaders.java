@@ -1,5 +1,6 @@
 package spaceInvaders;
 
+import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.io.Serializable;
@@ -42,9 +43,9 @@ public class Invaders implements Serializable {
         }
     }
 
-    public void drawInvaders(GraphicsContext gc) {
+    public void drawInvaders(Group root) {
         for (Invader invader : getInvaders()) {
-            invader.drawInvader(gc);
+            invader.drawInvader(root);
         }
     }
 

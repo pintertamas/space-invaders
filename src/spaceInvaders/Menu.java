@@ -37,8 +37,8 @@ public class Menu {
         Button loadButton = new Button("LOAD");
         Button exitButton = new Button("EXIT");
 
-        startButton.setOnMousePressed(mouseEvent -> startGame());
-        loadButton.setOnMousePressed(mouseEvent -> System.out.println("loadGame"));
+        startButton.setOnMousePressed(mouseEvent -> switchState(Main.State.game));
+        loadButton.setOnMousePressed(mouseEvent -> switchState(Main.State.load));
         exitButton.setOnMousePressed(mouseEvent -> System.exit(0));
 
         VBox buttons = new VBox(screenHeight / 10.f);
@@ -62,8 +62,8 @@ public class Menu {
         listeners.add(listener);
     }
 
-    private void startGame() {
+    private void switchState(Main.State state) {
         for (ChangeWindow cw : listeners)
-            cw.changeWindow(Main.State.game);
+            cw.changeWindow(state);
     }
 }

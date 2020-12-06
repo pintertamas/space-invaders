@@ -2,9 +2,10 @@ package spaceInvaders;
 
 import javafx.scene.canvas.GraphicsContext;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Bullets {
+public class Bullets implements Serializable {
     ArrayList<Bullet> bullets;
 
     public Bullets() {
