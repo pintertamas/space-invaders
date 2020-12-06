@@ -14,16 +14,8 @@ public class Invader extends Figure implements Serializable {
         super(posX, posY, size);
         this.isAlive = true;
 
-        Random random = new Random();
-        int randomImageIndex = random.nextInt(4) + 1;
-        switch (randomImageIndex) {
-            case 1 -> setImg(new Image("icons/alien1.png", getSize(), getSize(), true, true));
-            case 2 -> setImg(new Image("icons/alien2.png", getSize(), getSize(), true, true));
-            case 3 -> setImg(new Image("icons/alien3.png", getSize(), getSize(), true, true));
-            case 4 -> setImg(new Image("icons/alien4.png", getSize(), getSize(), true, true));
-            case 5 -> setImg(new Image("icons/alien5.png", getSize(), getSize(), true, true));
-
-        }
+        int randomImageIndex = new Random().nextInt(4) + 1;
+        setImg(new Image("icons/alien" + randomImageIndex + ".png", getSize(), getSize(), true, true));
     }
 
     public void update() {

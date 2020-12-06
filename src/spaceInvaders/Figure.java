@@ -39,8 +39,5 @@ public class Figure {
         bulletListeners.add(listener);
     }
 
-    protected void shoot(Bullet bullet) {
-        for (BulletListener bl : bulletListeners)
-            bl.addBullet(bullet);
-    }
+    protected void shoot(Bullet bullet) {}
 }

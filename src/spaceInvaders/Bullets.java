@@ -1,5 +1,7 @@
 package spaceInvaders;
 
+import javafx.scene.canvas.GraphicsContext;
+
 import java.util.ArrayList;
 
 public class Bullets {
@@ -19,5 +21,22 @@ public class Bullets {
 
     public void removeBullet(Bullet bullet) {
         bullets.remove(bullet);
+    }
+
+    public void updateBullets(int screenHeight) {
+        if (getBullets().size() != 0)
+            for (int i = 0; i < getBullets().size(); i++) {
+                if (getBullets().get(i).isAlive)
+                    getBullets().get(i).update(screenHeight);
+                else {
+                    removeBullet(bullets.get(i));
+                }
+            }
+    }
+
+    public void drawBullets(GraphicsContext gc) {
+        for (Bullet bullet : getBullets()) {
+            bullet.drawBullet(gc);
+        }
     }
 }

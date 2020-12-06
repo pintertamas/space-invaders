@@ -12,6 +12,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.util.Random;
+
 public class Main extends Application implements ChangeWindow {
 
     public enum State {menu, load, game, gameEnd}
@@ -20,8 +22,8 @@ public class Main extends Application implements ChangeWindow {
 
     @Override
     public void start(Stage primaryStage) {
-        int screenWidth = 900;
-        int screenHeight = 600;
+        int screenWidth = 600;
+        int screenHeight = 900;
         Group root = new Group();
         Canvas canvas = new Canvas(screenWidth, screenHeight);
         root.getChildren().add(canvas);
@@ -48,24 +50,26 @@ public class Main extends Application implements ChangeWindow {
             public void handle(long l) {
                 switch (state) {
                     case menu:
-                        //System.out.println("Menu");
                         menu.showMenu(root, canvas, gc);
                         break;
                     case load:
                         break;
                     case game:
-                        //System.out.println("Game");
                         game.showGame(root, canvas, gc);
                         break;
                     case gameEnd:
-                        //System.out.println("GameEnd");
                         break;
                 }
             }
         }.start();
+        Random random = new Random();
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
-            for (Invader invader : game.invaders().getInvaders()) {
-                invader.shoot(new EnemyBullet(invader.getPosX() + invader.getSize() / 2.f - screenHeight / 60.f, 300, screenHeight / 30));
+            if (state == State.game && game.invaders().getInvaders().size() != 0) {
+                for (Invader invader : game.invaders().getInvaders()) {
+                    if (random.nextInt(4) >= 3)
+                        invader.shoot(new EnemyBullet(invader.getPosX() + invader.getSize() / 2.f - screenHeight / 60.f, invader.getPosY() + invader.getSize() + screenHeight / 30f + 10, screenHeight / 30));
+                }
+
             }
         }));
         timeline.setCycleCount(Animation.INDEFINITE);

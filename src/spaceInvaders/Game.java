@@ -1,9 +1,12 @@
 package spaceInvaders;
 
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
@@ -25,35 +28,32 @@ public class Game implements Serializable, BulletListener {
         this.invaders = new Invaders();
         this.player = new Player(screenWidth / 2.f - 25, screenHeight - 60, 50);
         player.addBulletListener(this);
-        registerBulletListeners();
+
         this.bullets = new Bullets();
         this.windowListeners = new ArrayList<>();
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.scene = scene;
-        spawnInvaders();
-    }
-
-    private void registerBulletListeners() {
-        for (Invader invader : invaders.getInvaders()) {
-            invader.addBulletListener(this);
-        }
+        invaders.spawnInvaders(screenWidth);
+        invaders.addBulletListeners(this);
     }
 
     public void showGame(Group root, Canvas canvas, GraphicsContext gc) {
         setBackground(root, canvas, gc);
         player.movePlayer(scene, screenWidth, screenHeight);
         player.drawPlayer(gc);
-        drawInvaders(gc);
-        drawBullets(gc);
+        invaders.killIfDead();
+        invaders.killIfOutside(screenHeight);
+        invaders.drawInvaders(gc);
+        bullets.drawBullets(gc);
         updateInvaders();
-        updateBullets();
+        bullets.updateBullets(screenHeight);
         try {
             Thread.sleep(10);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        System.out.println(bullets.getBullets().size());
+        //System.out.println(bullets.getBullets().size());
     }
 
     private void setBackground(Group root, Canvas canvas, GraphicsContext gc) {
@@ -77,47 +77,17 @@ public class Game implements Serializable, BulletListener {
         }
     }
 
-    private void spawnInvaders() {
-        for (int i = 0; i < 11; i++) {
-            invaders.addInvader(new Invader(screenWidth / 11.f * i, 100, 40));
-        }
-    }
-
-    private void drawInvaders(GraphicsContext gc) {
-        for (Invader invader : invaders.getInvaders()) {
-            invader.drawInvader(gc);
-        }
-    }
-
-    private void drawBullets(GraphicsContext gc) {
-        for (Bullet bullet : bullets.getBullets()) {
-            bullet.drawBullet(gc);
-        }
-    }
-
-    private void updateBullets() {
-        if (bullets.getBullets().size() != 0)
-            for (int i = 0; i < bullets.getBullets().size(); i++) {
-                if (bullets.getBullets().get(i).isAlive)
-                    bullets.getBullets().get(i).update(screenHeight);
-                else {
-                    bullets.removeBullet(bullets.bullets.get(i));
-                }
-            }
-    }
-
     private void updateInvaders() {
         for (Invader invader : invaders.getInvaders()) {
-            //invader.update();
+            invader.update();
             for (Bullet bullet : bullets.getBullets()) {
                 if (bulletInvaderCollision(bullet, invader)) {
                     bullet.die();
                     invader.die();
                 }
             }
-            if (playerInvaderCollision(invader)) {
+            if (playerInvaderCollision(invader) && invader.isAlive()) {
                 player.damage();
-                System.out.println(player.getHealth());
                 invader.die();
             }
         }
@@ -138,6 +108,13 @@ public class Game implements Serializable, BulletListener {
                 player.getPosX() + player.getSize() < invader.getPosX() + invader.getSize() &&
                 player.getPosY() > invader.getPosY() &&
                 player.getPosY() + player.getSize() > invader.getPosY() + invader.getSize();
+    }
+
+    private void updateLevel() {
+        if (invaders.getInvaders().size() == 0 && currentLevel != 5) {
+            currentLevel++;
+            invaders.spawnInvaders(screenWidth);
+        }
     }
 
     public void addWindowListener(ChangeWindow listener) {

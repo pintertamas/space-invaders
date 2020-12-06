@@ -6,11 +6,13 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 
 import java.io.Serializable;
+import java.sql.Time;
 
 public class Player extends Figure implements Serializable {
 
     private int health;
     private final int speed;
+    private Time shootTime;
 
     public Player(float posX, float posY, int size) {
         super(posX, posY, size);
@@ -51,7 +53,7 @@ public class Player extends Figure implements Serializable {
                 moveLeft();
             } else if (code == KeyCode.D && getPosX() + getSize() + 10 < screenWidth - 10) {
                 moveRight();
-            } else if (code == KeyCode.SPACE) {
+            } if (code == KeyCode.SPACE) {
                 shoot(new PlayerBullet(getPosX() + getSize() / 2.f - 15, getPosY() - screenHeight / 60.f, screenHeight / 30));
             }
         });
