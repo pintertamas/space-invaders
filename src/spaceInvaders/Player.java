@@ -13,12 +13,13 @@ public class Player extends Figure implements Serializable {
 
     private int health;
     private final int speed;
-    private Time shootTime;
+    private long shootTime;
 
     public Player(float posX, float posY, int size) {
         super(posX, posY, size);
         health = 3;
         speed = 25;
+        shootTime = System.currentTimeMillis();
     }
 
     public void damage(){
@@ -43,8 +44,11 @@ public class Player extends Figure implements Serializable {
 
     @Override
     protected void shoot(Bullet bullet) {
-        for (BulletListener bl : bulletListeners)
-            bl.addBullet(bullet);
+        if (System.currentTimeMillis() > shootTime + 300) {
+            for (BulletListener bl : bulletListeners)
+                bl.addBullet(bullet);
+            shootTime = System.currentTimeMillis();
+        }
     }
 
     public void movePlayer(Scene scene, int screenWidth, int screenHeight) {
@@ -55,7 +59,7 @@ public class Player extends Figure implements Serializable {
             } else if (code == KeyCode.D && getPosX() + getSize() + 10 < screenWidth - 10) {
                 moveRight();
             } else if (code == KeyCode.W) {
-                shoot(new PlayerBullet(getPosX() + getSize() / 2.f - 15, getPosY() - screenHeight / 60.f, screenHeight / 30));
+                shoot(new PlayerBullet(getPosX() + getSize() / 2.f - screenHeight/60.f, getPosY() - screenHeight / 30.f-10, screenHeight / 30));
             }
         });
     }

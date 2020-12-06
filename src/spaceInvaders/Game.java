@@ -64,12 +64,12 @@ public class Game implements Serializable, BulletListener {
         bullets.drawBullets(gc);
         updateInvaders();
         bullets.updateBullets(screenHeight);
+        updateLevel();
         try {
             Thread.sleep(10);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        //System.out.println(bullets.getBullets().size());
     }
 
     private void setBackground(Group root, Canvas canvas, GraphicsContext gc) {
@@ -108,9 +108,16 @@ public class Game implements Serializable, BulletListener {
         for (Invader invader : invaders.getInvaders()) {
             invader.update();
             for (Bullet bullet : bullets.getBullets()) {
-                if (bulletInvaderCollision(bullet, invader)) {
+                if (bullet.isAlive && bulletInvaderCollision(bullet, invader)) {
                     bullet.die();
                     invader.die();
+                }
+                if (bullet.isAlive && bulletPlayerCollision(bullet, player)) {
+                    bullet.die();
+                    player.damage();
+                    if (player.getHealth() <= 0) {
+                        gameOver();
+                    }
                 }
             }
             if (playerInvaderCollision(invader) && invader.isAlive()) {
@@ -121,13 +128,17 @@ public class Game implements Serializable, BulletListener {
     }
 
     private boolean bulletInvaderCollision(Bullet bullet, Invader invader) {
-        if (bullet.isAlive()) {
-            return ((bullet.getPosX() > invader.getPosX() &&
-                    bullet.getPosX() < invader.getPosX() + invader.getSize()) ||
-                    (bullet.getPosX() + bullet.getSize() > invader.getPosX() && bullet.getPosX() + bullet.getSize() < invader.getPosX() + invader.getSize())) &&
-                    bullet.getPosY() < invader.getPosY() + invader.getSize();
-        }
-        return false;
+        return ((bullet.getPosX() > invader.getPosX() &&
+                bullet.getPosX() < invader.getPosX() + invader.getSize()) ||
+                (bullet.getPosX() + bullet.getSize() > invader.getPosX() && bullet.getPosX() + bullet.getSize() < invader.getPosX() + invader.getSize())) &&
+                bullet.getPosY() < invader.getPosY() + invader.getSize();
+    }
+
+    private boolean bulletPlayerCollision(Bullet bullet, Player player) {
+        return ((bullet.getPosX() > player.getPosX() &&
+                bullet.getPosX() < player.getPosX() + player.getSize()) ||
+                (bullet.getPosX() + bullet.getSize() > player.getPosX() && bullet.getPosX() + bullet.getSize() < player.getPosX() + player.getSize())) &&
+                bullet.getPosY() + bullet.getSize() > player.getPosY();
     }
 
     private boolean playerInvaderCollision(Invader invader) {
@@ -141,6 +152,10 @@ public class Game implements Serializable, BulletListener {
         if (invaders.getInvaders().size() == 0 && currentLevel != 5) {
             currentLevel++;
             invaders.spawnInvaders(screenWidth);
+            invaders.addBulletListeners(this);
+        } else if (currentLevel > 5) {
+            currentLevel = 1;
+            win();
         }
     }
 
@@ -149,9 +164,23 @@ public class Game implements Serializable, BulletListener {
     }
 
     private void menu() {
-        new Database().saveGame(this);
+        if (player.getHealth()<=0) {
+            new Database().saveGame(new Game(scene, screenWidth, screenHeight));
+        } else {
+            new Database().saveGame(this);
+        }
         for (ChangeWindow cw : windowListeners)
             cw.changeWindow(Main.State.menu);
+    }
+
+    private void gameOver() {
+        for (ChangeWindow cw : windowListeners)
+            cw.changeWindow(Main.State.gameOver);
+    }
+
+    private void win() {
+        for (ChangeWindow cw : windowListeners)
+            cw.changeWindow(Main.State.win);
     }
 
     @Override
@@ -189,13 +218,5 @@ public class Game implements Serializable, BulletListener {
 
     public Scene getScene() {
         return scene;
-    }
-
-    public void setScreenHeight(int screenHeight) {
-        this.screenHeight = screenHeight;
-    }
-
-    public ArrayList<ChangeWindow> getWindowListeners() {
-        return windowListeners;
     }
 }

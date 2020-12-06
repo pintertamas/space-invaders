@@ -12,12 +12,12 @@ public abstract class Bullet implements Serializable {
     protected int speed;
     protected boolean isAlive;
 
-    Bullet(float posX, float posY, int size) {
+    Bullet(float posX, float posY, int size, int speed) {
         this.isAlive = true;
         this.posX = posX;
         this.posY = posY;
         this.size = size;
-        this.speed = 30;
+        this.speed = speed;
     }
 
     public abstract void update(int screenHeight);

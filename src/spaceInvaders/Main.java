@@ -17,7 +17,7 @@ import java.util.Random;
 
 public class Main extends Application implements ChangeWindow, Serializable {
 
-    public enum State {menu, load, game, gameEnd}
+    public enum State {menu, load, game, gameOver, win}
 
     private State state = State.menu;
 
@@ -61,7 +61,11 @@ public class Main extends Application implements ChangeWindow, Serializable {
                     case game:
                         game.showGame(root, canvas, gc);
                         break;
-                    case gameEnd:
+                    case gameOver:
+                        System.out.println("gameOver");
+                        break;
+                    case win:
+                        System.out.println("win");
                         break;
                 }
             }
