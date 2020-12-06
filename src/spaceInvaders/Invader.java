@@ -15,7 +15,6 @@ public class Invader extends Figure implements Serializable {
     public Invader(float posX, float posY, int size) {
         super(posX, posY, size);
         this.isAlive = true;
-        this.addImageToInvader();
         this.speed = 0.5f;
     }
 

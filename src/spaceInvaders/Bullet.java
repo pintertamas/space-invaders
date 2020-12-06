@@ -11,6 +11,7 @@ public abstract class Bullet implements Serializable {
     protected final int size;
     protected final int speed;
     protected boolean isAlive;
+
     protected enum id {player, enemy}
 
     protected id bulletId;
@@ -36,10 +37,6 @@ public abstract class Bullet implements Serializable {
 
     public float getPosY() {
         return posY;
-    }
-
-    public boolean isAlive() {
-        return isAlive;
     }
 
     public int getSize() {

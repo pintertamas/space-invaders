@@ -67,7 +67,9 @@ public class Invaders implements Serializable {
     public void spawnInvaders(int screenWidth) {
         for (int i = 0; i < 5; i++)
             for (int j = 0; j < 11; j++) {
-                addInvader(new Invader(screenWidth / 11.f * j, 100 + i * 35, 30));
+                Invader invader = new Invader(screenWidth / 11.f * j, 100 + i * 35, 30);
+                invader.addImageToInvader();
+                addInvader(invader);
             }
     }
 
