@@ -34,7 +34,10 @@ public class Bullets implements Serializable {
                 }
             }
         }
+    }
 
+    public void removeBullets() {
+        bullets.clear();
     }
 
     public void removeCollidingBullets() {
@@ -45,13 +48,17 @@ public class Bullets implements Serializable {
         }
     }
 
-    private void bulletBulletCollision(Bullet bullet, Bullet bullet2) {
-        if (((bullet.getPosX() > bullet2.getPosX() &&
+    public boolean checkBulletBulletCollision(Bullet bullet, Bullet bullet2) {
+        return bullet.getBulletId() != bullet2.getBulletId() && (((bullet.getPosX() > bullet2.getPosX() &&
                 bullet.getPosX() < bullet2.getPosX() + bullet2.getSize()) ||
                 (bullet.getPosX() + bullet.getSize() > bullet2.getPosX() && bullet.getPosX() + bullet.getSize() < bullet2.getPosX() + bullet2.getSize())) &&
                 ((bullet.getPosY() > bullet2.getPosY() &&
                         bullet.getPosY() < bullet2.getPosY() + bullet2.getSize()) ||
-                        (bullet.getPosY() + bullet.getSize() > bullet2.getPosY() && bullet.getPosY() + bullet.getSize() < bullet2.getPosY() + bullet2.getSize()))) {
+                        (bullet.getPosY() + bullet.getSize() > bullet2.getPosY() && bullet.getPosY() + bullet.getSize() < bullet2.getPosY() + bullet2.getSize())));
+    }
+
+    private void bulletBulletCollision(Bullet bullet, Bullet bullet2) {
+        if (checkBulletBulletCollision(bullet, bullet2)) {
             bullet.die();
             bullet2.die();
         }

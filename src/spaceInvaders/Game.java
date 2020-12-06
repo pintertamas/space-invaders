@@ -8,10 +8,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -59,7 +61,6 @@ public class Game implements Serializable, BulletListener {
     public void showGame(Group root, Canvas canvas, GraphicsContext gc) {
         updateLevel();
         setBackground(root, canvas, gc);
-        saveButton(root);
         player.changeDirection(scene, screenWidth);
         player.movePlayer(screenWidth, screenHeight);
         player.drawPlayer(root);
@@ -71,8 +72,10 @@ public class Game implements Serializable, BulletListener {
         bullets.updateBullets(screenHeight);
         bullets.removeCollidingBullets();
         drawHealth(root);
+        drawCurrentLevel(root);
+        saveButton(root);
         /*try {
-            Thread.sleep(2);
+            Thread.sleep(5);
         } catch (Exception ex) {
             ex.printStackTrace();
         }*/
@@ -121,37 +124,65 @@ public class Game implements Serializable, BulletListener {
             imageView3.setX(2 * screenWidth / 10.f + 2 * screenWidth / 100.f);
             life.getChildren().add(imageView3);
         }
+
         VBox lifeContainer = new VBox();
         lifeContainer.setMinHeight(screenHeight / 10.f);
         lifeContainer.setAlignment(Pos.CENTER);
         life.setAlignment(Pos.CENTER);
         life.setMinWidth(screenWidth / 3.f);
         lifeContainer.getChildren().add(life);
+
         root.getChildren().addAll(lifeContainer);
     }
 
     private void saveButton(Group root) {
         Button saveButton = new Button("SAVE");
         saveButton.setId("saveButton");
+        saveButton.setOnMousePressed(keyEvent -> changeWindow(Main.State.menu));
+
         HBox buttonAlignment = new HBox();
-        buttonAlignment.getChildren().add(saveButton);
         buttonAlignment.setAlignment(Pos.CENTER);
         buttonAlignment.setMinWidth(screenWidth);
-        saveButton.setOnMousePressed(keyEvent -> changeWindow(Main.State.menu));
-        root.getChildren().add(buttonAlignment);
+        buttonAlignment.getChildren().add(saveButton);
+
+        VBox buttonVBox = new VBox();
+        buttonVBox.setMinHeight(screenHeight / 10.f);
+        buttonVBox.setAlignment(Pos.CENTER);
+        buttonVBox.getChildren().add(buttonAlignment);
+
+        root.getChildren().add(buttonVBox);
+    }
+
+    private void drawCurrentLevel(Group root) {
+        Text currentLevelText = new Text("LEVEL: " + currentLevel + "/5\t");
+        currentLevelText.setId("levelText");
+
+        HBox levelAlignment = new HBox();
+        levelAlignment.getChildren().add(currentLevelText);
+
+        BorderPane levelContainer = new BorderPane();
+        levelContainer.setRight(currentLevelText);
+        levelContainer.setMinWidth(screenWidth);
+
+        VBox levelVBox = new VBox();
+        levelVBox.setMinHeight(screenHeight / 10.f);
+        levelVBox.getChildren().add(levelContainer);
+        levelVBox.setAlignment(Pos.CENTER);
+
+        root.getChildren().add(levelVBox);
     }
 
     private void updateInvaders() {
         invaders.moveInvadersSideways(screenWidth);
         for (Invader invader : invaders.getInvaders()) {
             invader.update();
-            for (Bullet bullet : bullets.getBullets()) {
-                if (bullet.isAlive && bulletInvaderCollision(bullet, invader)) {
-                    bullet.die();
+            for (int i = 0; i < bullets.getBullets().size(); i++) {
+                if (bullets.getBullets().get(i).isAlive && bulletInvaderCollision(bullets.getBullets().get(i), invader)) {
+                    bullets.getBullets().get(i).die();
                     invader.die();
                 }
-                if (bullet.isAlive && bulletPlayerCollision(bullet, player)) {
-                    bullet.die();
+                if (bullets.getBullets().get(i).isAlive && bulletPlayerCollision(bullets.getBullets().get(i), player)) {
+                    bullets.getBullets().get(i).die();
                     player.damage();
                     if (player.getHealth() <= 0) {
                         changeWindow(Main.State.gameOver);
@@ -165,21 +196,21 @@ public class Game implements Serializable, BulletListener {
         }
     }
 
-    private boolean bulletInvaderCollision(Bullet bullet, Invader invader) {
+    public boolean bulletInvaderCollision(Bullet bullet, Invader invader) {
         return bullet.getBulletId() == Bullet.id.player && (((bullet.getPosX() > invader.getPosX() &&
                 bullet.getPosX() < invader.getPosX() + invader.getSize()) ||
                 (bullet.getPosX() + bullet.getSize() > invader.getPosX() && bullet.getPosX() + bullet.getSize() < invader.getPosX() + invader.getSize())) &&
                 bullet.getPosY() < invader.getPosY() + invader.getSize());
     }
 
-    private boolean bulletPlayerCollision(Bullet bullet, Player player) {
+    public boolean bulletPlayerCollision(Bullet bullet, Player player) {
         return bullet.getBulletId() == Bullet.id.enemy && (((bullet.getPosX() > player.getPosX() &&
                 bullet.getPosX() < player.getPosX() + player.getSize()) ||
                 (bullet.getPosX() + bullet.getSize() > player.getPosX() && bullet.getPosX() + bullet.getSize() < player.getPosX() + player.getSize())) &&
                 bullet.getPosY() + bullet.getSize() > player.getPosY());
     }
 
-    private boolean playerInvaderCollision(Invader invader) {
+    public boolean playerInvaderCollision(Invader invader) {
         return player.getPosX() > invader.getPosX() &&
                 player.getPosX() + player.getSize() < invader.getPosX() + invader.getSize() &&
                 player.getPosY() > invader.getPosY() &&
@@ -189,6 +220,7 @@ public class Game implements Serializable, BulletListener {
     private void updateLevel() {
         if (invaders.getInvaders().size() == 0 && currentLevel != 5) {
             currentLevel++;
+            bullets.removeBullets();
             invaders.spawnInvaders(screenWidth);
             invaders.addBulletListeners(this);
         } else if (currentLevel == 5 && invaders.getInvaders().size() == 0) {
@@ -201,10 +233,15 @@ public class Game implements Serializable, BulletListener {
         windowListeners.add(listener);
     }
 
+    public void clearWindowListeners() {
+        windowListeners.clear();
+    }
+
     private void changeWindow(Main.State state) {
         if (player.getHealth() <= 0) {
             new Database().saveGame(new Game(scene, screenWidth, screenHeight));
             player.setShooting(false);
+            bullets.removeBullets();
         } else {
             new Database().saveGame(this);
         }

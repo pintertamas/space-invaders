@@ -26,8 +26,8 @@ public class Menu {
         setBackground(root, canvas, gc);
         Text logoTextFront = new Text(45, 65, "SPACE INVADERS");
         Text logoTextBack = new Text(50, 70, "SPACE INVADERS");
-        logoTextFront.setId("logoText");
-        logoTextBack.setId("logoText");
+        logoTextFront.setId("text");
+        logoTextBack.setId("text");
         logoTextFront.setStyle("-fx-text-inner-color: darkgreen;");
         logoTextBack.setStyle("-fx-text-inner-color: limegreen;");
         root.getChildren().addAll(logoTextBack, logoTextFront);

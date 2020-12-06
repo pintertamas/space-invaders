@@ -68,11 +68,13 @@ public class Main extends Application implements ChangeWindow, Serializable {
                     case gameOver:
                         gameOver.showGameOver(root, canvas, gc);
                         game.setGame(new Game(scene, screenWidth, screenHeight), scene);
+                        game.clearWindowListeners();
                         game.addWindowListener(Main.this);
                         break;
                     case win:
                         winScreen.showWinScreen(root, canvas, gc);
                         game.setGame(new Game(scene, screenWidth, screenHeight), scene);
+                        game.clearWindowListeners();
                         game.addWindowListener(Main.this);
                         break;
                 }

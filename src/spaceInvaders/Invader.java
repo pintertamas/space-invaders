@@ -10,8 +10,7 @@ import java.util.Random;
 public class Invader extends Figure implements Serializable {
     private boolean isAlive;
     private transient Image img;
-    private boolean direction;
-    private float speed;
+    private final float speed;
 
     public Invader(float posX, float posY, int size) {
         super(posX, posY, size);

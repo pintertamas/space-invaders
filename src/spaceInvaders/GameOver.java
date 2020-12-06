@@ -26,8 +26,8 @@ public class GameOver {
         setBackground(root, canvas, gc);
         Text gameOverTextFront = new Text(45, 65, "GAME OVER");
         Text gameOverTextBack = new Text(50, 70, "GAME OVER");
-        gameOverTextFront.setId("logoText");
-        gameOverTextBack.setId("logoText");
+        gameOverTextFront.setId("text");
+        gameOverTextBack.setId("text");
         gameOverTextFront.setStyle("-fx-text-inner-color: darkgreen;");
         gameOverTextBack.setStyle("-fx-text-inner-color: limegreen;");
         root.getChildren().addAll(gameOverTextBack, gameOverTextFront);

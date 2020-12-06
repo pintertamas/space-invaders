@@ -3,10 +3,15 @@
     src: url('fonts/nasalization-rg.ttf');
 }
 
-#logoText, .button {
+#text, #levelText, .button {
     -fx-font-family: "Nasalization Rg";
     -fx-fill: -fx-text-inner-color;
     -fx-font-size: 48;
+}
+
+#levelText {
+    -fx-font-size: 20;
+    -fx-fill: white;
 }
 
 .button {

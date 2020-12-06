@@ -26,8 +26,8 @@ public class WinScreen {
         setBackground(root, canvas, gc);
         Text youWonTextFront = new Text(45, 65, "YOU WON!");
         Text youWonTextBack = new Text(50, 70, "YOU WON!");
-        youWonTextFront.setId("logoText");
-        youWonTextBack.setId("logoText");
+        youWonTextFront.setId("text");
+        youWonTextBack.setId("text");
         youWonTextFront.setStyle("-fx-text-inner-color: darkgreen;");
         youWonTextBack.setStyle("-fx-text-inner-color: limegreen;");
         root.getChildren().addAll(youWonTextBack, youWonTextFront);
