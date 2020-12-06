@@ -1,8 +1,9 @@
 package spaceInvaders;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Figure {
+public class Figure implements Serializable {
     private float posX;
     private float posY;
     private final int size;
@@ -40,4 +41,8 @@ public class Figure {
     }
 
     protected void shoot(Bullet bullet) {}
+
+    public void clearListeners() {
+        bulletListeners.clear();
+    }
 }

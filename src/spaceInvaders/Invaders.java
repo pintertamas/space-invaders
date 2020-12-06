@@ -43,6 +43,12 @@ public class Invaders implements Serializable {
         }
     }
 
+    public void loadInvaders() {
+        for (Invader invader : invaders) {
+            invader.addImageToInvader();
+        }
+    }
+
     public void drawInvaders(Group root) {
         for (Invader invader : getInvaders()) {
             invader.drawInvader(root);
@@ -52,6 +58,12 @@ public class Invaders implements Serializable {
     public void addBulletListeners(BulletListener bulletListener) {
         for (Invader invader : getInvaders()) {
             invader.addBulletListener(bulletListener);
+        }
+    }
+
+    public void removeBulletListeners() {
+        for (Invader invader : getInvaders()) {
+            invader.clearListeners();
         }
     }
 }

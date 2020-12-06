@@ -54,8 +54,8 @@ public class Main extends Application implements ChangeWindow, Serializable {
                         menu.showMenu(root, canvas, gc);
                         break;
                     case load:
-                        System.out.println("load");
-
+                        game.setGame(new Database().loadGame(scene, screenWidth, screenHeight), scene);
+                        game.addWindowListener(Main.this);
                         state = State.game;
                         break;
                     case game:

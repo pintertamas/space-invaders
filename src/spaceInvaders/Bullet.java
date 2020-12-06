@@ -3,7 +3,9 @@ package spaceInvaders;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public abstract class Bullet {
+import java.io.Serializable;
+
+public abstract class Bullet implements Serializable {
     protected float posX;
     protected float posY;
     protected int size;

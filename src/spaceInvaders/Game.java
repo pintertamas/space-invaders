@@ -37,6 +37,22 @@ public class Game implements Serializable, BulletListener {
         invaders.addBulletListeners(this);
     }
 
+    public void setGame(Game game, Scene scene) {
+        this.currentLevel = game.getCurrentLevel();
+        this.invaders = game.getInvaders();
+        this.player = game.getPlayer();
+        this.bullets = game.getBullets();
+        this.windowListeners = new ArrayList<>();
+        this.screenWidth = game.getScreenWidth();
+        this.screenHeight = game.getScreenHeight();
+        this.scene = scene;
+        this.invaders.loadInvaders();
+        player.clearListeners();
+        player.addBulletListener(this);
+        invaders.removeBulletListeners();
+        invaders.addBulletListeners(this);
+    }
+
     public void showGame(Group root, Canvas canvas, GraphicsContext gc) {
         setBackground(root, canvas, gc);
         saveButton(root);
@@ -147,7 +163,6 @@ public class Game implements Serializable, BulletListener {
         return invaders;
     }
 
-    //--------------------------------
     public Invaders getInvaders() {
         return invaders;
     }
@@ -176,11 +191,11 @@ public class Game implements Serializable, BulletListener {
         return scene;
     }
 
-    public ArrayList<ChangeWindow> getWindowListeners() {
-        return windowListeners;
+    public void setScreenHeight(int screenHeight) {
+        this.screenHeight = screenHeight;
     }
 
-    public void setGame(Game game) {
-
+    public ArrayList<ChangeWindow> getWindowListeners() {
+        return windowListeners;
     }
 }

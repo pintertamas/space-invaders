@@ -57,7 +57,6 @@ public class Player extends Figure implements Serializable {
             } else if (code == KeyCode.W) {
                 shoot(new PlayerBullet(getPosX() + getSize() / 2.f - 15, getPosY() - screenHeight / 60.f, screenHeight / 30));
             }
-
         });
     }
 

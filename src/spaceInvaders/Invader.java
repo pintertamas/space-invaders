@@ -1,7 +1,6 @@
 package spaceInvaders;
 
 import javafx.scene.Group;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -15,7 +14,10 @@ public class Invader extends Figure implements Serializable {
     public Invader(float posX, float posY, int size) {
         super(posX, posY, size);
         this.isAlive = true;
+        this.addImageToInvader();
+    }
 
+    public void addImageToInvader() {
         int randomImageIndex = new Random().nextInt(4) + 1;
         setImg(new Image("icons/alien" + randomImageIndex + ".png", getSize(), getSize(), true, true));
     }
