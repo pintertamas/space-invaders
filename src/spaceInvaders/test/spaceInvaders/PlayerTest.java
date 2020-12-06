@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {
 
-    Player player = new Player(100, 200, 10);
+    final Player player = new Player(100, 200, 10);
 
     @Test
     void createPlayer() {

@@ -1,13 +1,12 @@
 package spaceInvaders;
 
 import javafx.scene.Group;
-import javafx.scene.canvas.GraphicsContext;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Invaders implements Serializable {
-    ArrayList<Invader> invaders;
+    final ArrayList<Invader> invaders;
     private boolean direction;
     private final float speed;
 

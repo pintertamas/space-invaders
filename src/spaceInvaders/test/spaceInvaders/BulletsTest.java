@@ -6,10 +6,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BulletsTest {
 
-    Bullet bullet1 = new PlayerBullet(100, 100, 30);
-    Bullet bullet2 = new PlayerBullet(100, 100, 30);
-    Bullet bullet3 = new EnemyBullet(120, 129, 30);
-    Bullet bullet4 = new EnemyBullet(200, 200, 30);
+    final Bullet bullet1 = new PlayerBullet(100, 100, 30);
+    final Bullet bullet2 = new PlayerBullet(100, 100, 30);
+    final Bullet bullet3 = new EnemyBullet(120, 129, 30);
+    final Bullet bullet4 = new EnemyBullet(200, 200, 30);
 
     @Test
     void bulletBulletCollision() {

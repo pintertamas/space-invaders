@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Bullets implements Serializable {
-    ArrayList<Bullet> bullets;
+    final ArrayList<Bullet> bullets;
 
     public Bullets() {
         this.bullets = new ArrayList<>();

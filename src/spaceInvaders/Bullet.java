@@ -6,12 +6,13 @@ import javafx.scene.image.Image;
 import java.io.Serializable;
 
 public abstract class Bullet implements Serializable {
-    protected float posX;
+    protected final float posX;
     protected float posY;
-    protected int size;
-    protected int speed;
+    protected final int size;
+    protected final int speed;
     protected boolean isAlive;
-    protected enum id {player, enemy};
+    protected enum id {player, enemy}
+
     protected id bulletId;
 
     Bullet(float posX, float posY, int size, int speed) {
