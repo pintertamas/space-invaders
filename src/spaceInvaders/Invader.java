@@ -10,11 +10,14 @@ import java.util.Random;
 public class Invader extends Figure implements Serializable {
     private boolean isAlive;
     private transient Image img;
+    private boolean direction;
+    private float speed;
 
     public Invader(float posX, float posY, int size) {
         super(posX, posY, size);
         this.isAlive = true;
         this.addImageToInvader();
+        this.speed = 0.5f;
     }
 
     public void addImageToInvader() {
@@ -23,7 +26,7 @@ public class Invader extends Figure implements Serializable {
     }
 
     public void update() {
-        this.setPosY(getPosY()+1);
+        this.setPosY(getPosY() + speed);
     }
 
     public void die() {
@@ -40,6 +43,10 @@ public class Invader extends Figure implements Serializable {
 
     public Image getImg() {
         return img;
+    }
+
+    public float getSpeed() {
+        return speed;
     }
 
     @Override

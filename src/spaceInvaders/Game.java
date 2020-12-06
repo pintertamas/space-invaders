@@ -6,7 +6,10 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
@@ -54,9 +57,11 @@ public class Game implements Serializable, BulletListener {
     }
 
     public void showGame(Group root, Canvas canvas, GraphicsContext gc) {
+        updateLevel();
         setBackground(root, canvas, gc);
         saveButton(root);
-        player.movePlayer(scene, screenWidth, screenHeight);
+        player.changeDirection(scene, screenWidth);
+        player.movePlayer(screenWidth, screenHeight);
         player.drawPlayer(root);
         invaders.killIfDead();
         invaders.killIfOutside(screenHeight);
@@ -64,12 +69,13 @@ public class Game implements Serializable, BulletListener {
         bullets.drawBullets(gc);
         updateInvaders();
         bullets.updateBullets(screenHeight);
-        updateLevel();
-        try {
-            Thread.sleep(10);
+        bullets.removeCollidingBullets();
+        drawHealth(root);
+        /*try {
+            Thread.sleep(2);
         } catch (Exception ex) {
             ex.printStackTrace();
-        }
+        }*/
     }
 
     private void setBackground(Group root, Canvas canvas, GraphicsContext gc) {
@@ -93,6 +99,37 @@ public class Game implements Serializable, BulletListener {
         }
     }
 
+    private void drawHealth(Group root) {
+        HBox life = new HBox(screenWidth / 50.f);
+        Image image = new Image("icons/health.png", screenWidth / 20.f, screenWidth / 20.f, true, true);
+
+        if (player.getHealth() > 0) {
+            ImageView imageView1 = new ImageView(image);
+            imageView1.setY(screenHeight / 200.f);
+            imageView1.setX(0);
+            life.getChildren().add(imageView1);
+        }
+        if (player.getHealth() > 1) {
+            ImageView imageView2 = new ImageView(image);
+            imageView2.setY(screenHeight / 200.f);
+            imageView2.setX(screenWidth / 10.f + screenWidth / 100.f);
+            life.getChildren().add(imageView2);
+        }
+        if (player.getHealth() > 2) {
+            ImageView imageView3 = new ImageView(image);
+            imageView3.setY(screenHeight / 200.f);
+            imageView3.setX(2 * screenWidth / 10.f + 2 * screenWidth / 100.f);
+            life.getChildren().add(imageView3);
+        }
+        VBox lifeContainer = new VBox();
+        lifeContainer.setMinHeight(screenHeight / 10.f);
+        lifeContainer.setAlignment(Pos.CENTER);
+        life.setAlignment(Pos.CENTER);
+        life.setMinWidth(screenWidth / 3.f);
+        lifeContainer.getChildren().add(life);
+        root.getChildren().addAll(lifeContainer);
+    }
+
     private void saveButton(Group root) {
         Button saveButton = new Button("SAVE");
         saveButton.setId("saveButton");
@@ -100,11 +137,12 @@ public class Game implements Serializable, BulletListener {
         buttonAlignment.getChildren().add(saveButton);
         buttonAlignment.setAlignment(Pos.CENTER);
         buttonAlignment.setMinWidth(screenWidth);
-        saveButton.setOnMousePressed(keyEvent -> menu());
+        saveButton.setOnMousePressed(keyEvent -> changeWindow(Main.State.menu));
         root.getChildren().add(buttonAlignment);
     }
 
     private void updateInvaders() {
+        invaders.moveInvadersSideways(screenWidth);
         for (Invader invader : invaders.getInvaders()) {
             invader.update();
             for (Bullet bullet : bullets.getBullets()) {
@@ -116,7 +154,7 @@ public class Game implements Serializable, BulletListener {
                     bullet.die();
                     player.damage();
                     if (player.getHealth() <= 0) {
-                        gameOver();
+                        changeWindow(Main.State.gameOver);
                     }
                 }
             }
@@ -128,17 +166,17 @@ public class Game implements Serializable, BulletListener {
     }
 
     private boolean bulletInvaderCollision(Bullet bullet, Invader invader) {
-        return ((bullet.getPosX() > invader.getPosX() &&
+        return bullet.getBulletId() == Bullet.id.player && (((bullet.getPosX() > invader.getPosX() &&
                 bullet.getPosX() < invader.getPosX() + invader.getSize()) ||
                 (bullet.getPosX() + bullet.getSize() > invader.getPosX() && bullet.getPosX() + bullet.getSize() < invader.getPosX() + invader.getSize())) &&
-                bullet.getPosY() < invader.getPosY() + invader.getSize();
+                bullet.getPosY() < invader.getPosY() + invader.getSize());
     }
 
     private boolean bulletPlayerCollision(Bullet bullet, Player player) {
-        return ((bullet.getPosX() > player.getPosX() &&
+        return bullet.getBulletId() == Bullet.id.enemy && (((bullet.getPosX() > player.getPosX() &&
                 bullet.getPosX() < player.getPosX() + player.getSize()) ||
                 (bullet.getPosX() + bullet.getSize() > player.getPosX() && bullet.getPosX() + bullet.getSize() < player.getPosX() + player.getSize())) &&
-                bullet.getPosY() + bullet.getSize() > player.getPosY();
+                bullet.getPosY() + bullet.getSize() > player.getPosY());
     }
 
     private boolean playerInvaderCollision(Invader invader) {
@@ -153,9 +191,9 @@ public class Game implements Serializable, BulletListener {
             currentLevel++;
             invaders.spawnInvaders(screenWidth);
             invaders.addBulletListeners(this);
-        } else if (currentLevel > 5) {
+        } else if (currentLevel == 5 && invaders.getInvaders().size() == 0) {
             currentLevel = 1;
-            win();
+            changeWindow(Main.State.win);
         }
     }
 
@@ -163,24 +201,15 @@ public class Game implements Serializable, BulletListener {
         windowListeners.add(listener);
     }
 
-    private void menu() {
-        if (player.getHealth()<=0) {
+    private void changeWindow(Main.State state) {
+        if (player.getHealth() <= 0) {
             new Database().saveGame(new Game(scene, screenWidth, screenHeight));
+            player.setShooting(false);
         } else {
             new Database().saveGame(this);
         }
         for (ChangeWindow cw : windowListeners)
-            cw.changeWindow(Main.State.menu);
-    }
-
-    private void gameOver() {
-        for (ChangeWindow cw : windowListeners)
-            cw.changeWindow(Main.State.gameOver);
-    }
-
-    private void win() {
-        for (ChangeWindow cw : windowListeners)
-            cw.changeWindow(Main.State.win);
+            cw.changeWindow(state);
     }
 
     @Override

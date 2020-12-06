@@ -8,7 +8,8 @@ import java.io.Serializable;
 public class EnemyBullet extends Bullet implements Serializable {
 
     EnemyBullet(float posX, float posY, int size) {
-        super(posX, posY, size, 10);
+        super(posX, posY, size, 5);
+        this.bulletId = id.enemy;
     }
 
     @Override

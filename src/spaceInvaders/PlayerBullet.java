@@ -9,6 +9,7 @@ public class PlayerBullet extends Bullet implements Serializable {
 
     PlayerBullet(float posX, float posY, int size) {
         super(posX, posY, size, 30);
+        this.bulletId = id.player;
     }
 
     @Override

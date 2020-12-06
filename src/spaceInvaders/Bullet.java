@@ -11,6 +11,8 @@ public abstract class Bullet implements Serializable {
     protected int size;
     protected int speed;
     protected boolean isAlive;
+    protected enum id {player, enemy};
+    protected id bulletId;
 
     Bullet(float posX, float posY, int size, int speed) {
         this.isAlive = true;
@@ -41,6 +43,10 @@ public abstract class Bullet implements Serializable {
 
     public int getSize() {
         return size;
+    }
+
+    public id getBulletId() {
+        return bulletId;
     }
 
     public void die() {

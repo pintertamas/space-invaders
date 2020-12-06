@@ -46,6 +46,10 @@ public class Main extends Application implements ChangeWindow, Serializable {
         menu.addListener(this);
         Game game = new Game(scene, screenWidth, screenHeight);
         game.addWindowListener(this);
+        GameOver gameOver = new GameOver(screenWidth, screenHeight);
+        gameOver.addListener(this);
+        WinScreen winScreen = new WinScreen(screenWidth, screenHeight);
+        winScreen.addListener(this);
         new AnimationTimer() {
             @Override
             public void handle(long l) {
@@ -62,10 +66,14 @@ public class Main extends Application implements ChangeWindow, Serializable {
                         game.showGame(root, canvas, gc);
                         break;
                     case gameOver:
-                        System.out.println("gameOver");
+                        gameOver.showGameOver(root, canvas, gc);
+                        game.setGame(new Game(scene, screenWidth, screenHeight), scene);
+                        game.addWindowListener(Main.this);
                         break;
                     case win:
-                        System.out.println("win");
+                        winScreen.showWinScreen(root, canvas, gc);
+                        game.setGame(new Game(scene, screenWidth, screenHeight), scene);
+                        game.addWindowListener(Main.this);
                         break;
                 }
             }
@@ -74,7 +82,7 @@ public class Main extends Application implements ChangeWindow, Serializable {
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
             if (state == State.game && game.invaders().getInvaders().size() != 0) {
                 for (Invader invader : game.invaders().getInvaders()) {
-                    if (random.nextInt(4) >= 3)
+                    if (random.nextInt(100) >= 90)
                         invader.shoot(new EnemyBullet(invader.getPosX() + invader.getSize() / 2.f - screenHeight / 60.f, invader.getPosY() + invader.getSize() + screenHeight / 30f + 10, screenHeight / 30));
                 }
 

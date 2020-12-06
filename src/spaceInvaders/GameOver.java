@@ -11,38 +11,36 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
-public class Menu {
+public class GameOver {
     private final int screenWidth;
     private final int screenHeight;
     private final ArrayList<ChangeWindow> listeners;
 
-    public Menu(int screenWidth, int screenHeight) {
+    public GameOver(int screenWidth, int screenHeight) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.listeners = new ArrayList<>();
     }
 
-    public void showMenu(Group root, Canvas canvas, GraphicsContext gc) {
+    public void showGameOver(Group root, Canvas canvas, GraphicsContext gc) {
         setBackground(root, canvas, gc);
-        Text logoTextFront = new Text(45, 65, "SPACE INVADERS");
-        Text logoTextBack = new Text(50, 70, "SPACE INVADERS");
-        logoTextFront.setId("logoText");
-        logoTextBack.setId("logoText");
-        logoTextFront.setStyle("-fx-text-inner-color: darkgreen;");
-        logoTextBack.setStyle("-fx-text-inner-color: limegreen;");
-        root.getChildren().addAll(logoTextBack, logoTextFront);
+        Text gameOverTextFront = new Text(45, 65, "GAME OVER");
+        Text gameOverTextBack = new Text(50, 70, "GAME OVER");
+        gameOverTextFront.setId("logoText");
+        gameOverTextBack.setId("logoText");
+        gameOverTextFront.setStyle("-fx-text-inner-color: darkgreen;");
+        gameOverTextBack.setStyle("-fx-text-inner-color: limegreen;");
+        root.getChildren().addAll(gameOverTextBack, gameOverTextFront);
 
-        Button startButton = new Button("START");
-        Button loadButton = new Button("LOAD");
+        Button menuButton = new Button("MENU");
         Button exitButton = new Button("EXIT");
 
-        startButton.setOnMousePressed(mouseEvent -> switchState(Main.State.game));
-        loadButton.setOnMousePressed(mouseEvent -> switchState(Main.State.load));
+        menuButton.setOnMousePressed(mouseEvent -> switchState());
         exitButton.setOnMousePressed(mouseEvent -> System.exit(0));
 
         VBox buttons = new VBox(screenHeight / 10.f);
         buttons.setAlignment(Pos.CENTER);
-        buttons.getChildren().addAll(startButton, loadButton, exitButton);
+        buttons.getChildren().addAll(menuButton, exitButton);
         buttons.setMinWidth(screenWidth * 2 / 3.f);
         buttons.setMaxWidth(screenWidth * 2 / 3.f);
         buttons.setLayoutX(screenWidth / 2.f - buttons.getMaxWidth() / 2);
@@ -61,8 +59,8 @@ public class Menu {
         listeners.add(listener);
     }
 
-    private void switchState(Main.State state) {
+    private void switchState() {
         for (ChangeWindow cw : listeners)
-            cw.changeWindow(state);
+            cw.changeWindow(Main.State.menu);
     }
 }
