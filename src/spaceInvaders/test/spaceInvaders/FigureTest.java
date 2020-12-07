@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FigureTest {
-    Figure figure = new Figure(100, 200, 30);
+    final Figure figure = new Figure(100, 200, 30);
 
     @Test
     void addInvader() {

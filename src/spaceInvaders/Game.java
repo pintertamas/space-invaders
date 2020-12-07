@@ -96,11 +96,11 @@ public class Game implements Serializable, BulletListener {
         drawHealth(root);
         drawCurrentLevel(root);
         saveButton(root);
-        /*try {
-            Thread.sleep(5);
+        try {
+            Thread.sleep(1);
         } catch (Exception ex) {
             ex.printStackTrace();
-        }*/
+        }
     }
 
     /**
