@@ -18,6 +18,9 @@ import javafx.scene.text.Text;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * Ez az osztály valósítja meg a játék menetét
+ */
 public class Game implements Serializable, BulletListener {
     private Invaders invaders;
     private Player player;
@@ -28,6 +31,14 @@ public class Game implements Serializable, BulletListener {
     private transient Scene scene;
     private ArrayList<ChangeWindow> windowListeners;
 
+    /**
+     * Ez a játék konstruktora
+     * Meghívásakor létrehozza a fontos entitásokat, mint például az invadereket, a játékost, és a lövedékeket
+     * Ezek mellett "feliratkozik" a lövések figyelésére, azaz ha a player vagy valamelyik invader lő egyet, akkor ez az osztály tudni fog róla
+     * @param scene ez a játék Scene-je
+     * @param screenWidth a képernyő szélessége
+     * @param screenHeight a képernyő magassága
+     */
     public Game(Scene scene, int screenWidth, int screenHeight) {
         this.currentLevel = 1;
         this.invaders = new Invaders();
@@ -42,6 +53,11 @@ public class Game implements Serializable, BulletListener {
         invaders.addBulletListeners(this);
     }
 
+    /**
+     * Ez a függvény beállítja a játék értékeit a megadott játék értékeire
+     * @param game ennek az értékeire állítja be
+     * @param scene ez a Scene amit használ
+     */
     public void setGame(Game game, Scene scene) {
         this.currentLevel = game.getCurrentLevel();
         this.invaders = game.getInvaders();
@@ -58,6 +74,12 @@ public class Game implements Serializable, BulletListener {
         invaders.addBulletListeners(this);
     }
 
+    /**
+     * Ez a függvény fut a játékciklusban
+     * @param root ez a csoport amire rakja a dolgokat
+     * @param canvas ez a canvas
+     * @param gc ezt használja a háttér egyszínűre festéséhez
+     */
     public void showGame(Group root, Canvas canvas, GraphicsContext gc) {
         updateLevel();
         setBackground(root, canvas, gc);
@@ -66,9 +88,9 @@ public class Game implements Serializable, BulletListener {
         player.drawPlayer(root);
         invaders.killIfDead();
         invaders.killIfOutside(screenHeight);
-        invaders.drawInvaders(root);
-        bullets.drawBullets(gc);
+        bullets.drawBullets(root);
         updateInvaders();
+        invaders.drawInvaders(root);
         bullets.updateBullets(screenHeight);
         bullets.removeCollidingBullets();
         drawHealth(root);
@@ -81,6 +103,12 @@ public class Game implements Serializable, BulletListener {
         }*/
     }
 
+    /**
+     * Kitörli a képernyő elemeit és lefesti egyszínűre a hátteret, majd vonalakat rajzol rá nagyon király módon
+     * @param root ennek a csoportnak az elemeit törli
+     * @param canvas erre a canvasra fest
+     * @param gc ezzel a GraphicsContext-tel rajzol téglalapot
+     */
     private void setBackground(Group root, Canvas canvas, GraphicsContext gc) {
         root.getChildren().clear();
         gc.setFill(Color.rgb(30, 30, 30));
@@ -102,6 +130,10 @@ public class Game implements Serializable, BulletListener {
         }
     }
 
+    /**
+     * Felírja a képernyőre a játékos életét
+     * @param root ehhez a csoporthoz adja hozzá
+     */
     private void drawHealth(Group root) {
         HBox life = new HBox(screenWidth / 50.f);
         Image image = new Image("icons/health.png", screenWidth / 20.f, screenWidth / 20.f, true, true);
@@ -135,6 +167,10 @@ public class Game implements Serializable, BulletListener {
         root.getChildren().addAll(lifeContainer);
     }
 
+    /**
+     * Felrak a képernyőre egy gombot, aminek a megnyomása elmenti a játékot és visszavisz a menübe
+     * @param root ehhez a csoporthoz adja hozzá
+     */
     private void saveButton(Group root) {
         Button saveButton = new Button("SAVE");
         saveButton.setId("saveButton");
@@ -153,6 +189,10 @@ public class Game implements Serializable, BulletListener {
         root.getChildren().add(buttonVBox);
     }
 
+    /**
+     * Felírja a képernyőre az aktuális szintet
+     * @param root ehhez a csoporthoz adja hozzá
+     */
     private void drawCurrentLevel(Group root) {
         Text currentLevelText = new Text("LEVEL: " + currentLevel + "/5\t");
         currentLevelText.setId("levelText");
@@ -172,6 +212,9 @@ public class Game implements Serializable, BulletListener {
         root.getChildren().add(levelVBox);
     }
 
+    /**
+     * Frissíti az invaderek pozícióját, adott esetben pedig sebzi a játékost
+     */
     private void updateInvaders() {
         invaders.moveInvadersSideways(screenWidth);
         for (Invader invader : invaders.getInvaders()) {
@@ -181,7 +224,7 @@ public class Game implements Serializable, BulletListener {
                     bullets.getBullets().get(i).die();
                     invader.die();
                 }
-                if (bullets.getBullets().get(i).isAlive && bulletPlayerCollision(bullets.getBullets().get(i), player)) {
+                if (bullets.getBullets().get(i).isAlive && bulletPlayerCollision(bullets.getBullets().get(i))) {
                     bullets.getBullets().get(i).die();
                     player.damage();
                     if (player.getHealth() <= 0) {
@@ -196,6 +239,13 @@ public class Game implements Serializable, BulletListener {
         }
     }
 
+    /**
+     * Visszatér azzal, hogy eltalálta-e az invadert a golyó
+     * Feltéve hogy a golyó a játékosé
+     * @param bullet a golyó
+     * @param invader az invader
+     * @return ütköztek-e
+     */
     public boolean bulletInvaderCollision(Bullet bullet, Invader invader) {
         return bullet.getBulletId() == Bullet.id.player && (((bullet.getPosX() > invader.getPosX() &&
                 bullet.getPosX() < invader.getPosX() + invader.getSize()) ||
@@ -203,13 +253,24 @@ public class Game implements Serializable, BulletListener {
                 bullet.getPosY() < invader.getPosY() + invader.getSize());
     }
 
-    public boolean bulletPlayerCollision(Bullet bullet, Player player) {
+    /**
+     * Visszaadja, hogy eltalálta-e a játékost a golyó
+     * Feltéve hogy a golyó ellenséges
+     * @param bullet a golyó
+     * @return ütköztek-e
+     */
+    public boolean bulletPlayerCollision(Bullet bullet) {
         return bullet.getBulletId() == Bullet.id.enemy && (((bullet.getPosX() > player.getPosX() &&
                 bullet.getPosX() < player.getPosX() + player.getSize()) ||
                 (bullet.getPosX() + bullet.getSize() > player.getPosX() && bullet.getPosX() + bullet.getSize() < player.getPosX() + player.getSize())) &&
                 bullet.getPosY() + bullet.getSize() > player.getPosY());
     }
 
+    /**
+     * Visszaadja, hogy a játékos ütközik-e az invaderrel
+     * @param invader az invader
+     * @return ütköztek-e
+     */
     public boolean playerInvaderCollision(Invader invader) {
         return player.getPosX() > invader.getPosX() &&
                 player.getPosX() + player.getSize() < invader.getPosX() + invader.getSize() &&
@@ -217,6 +278,9 @@ public class Game implements Serializable, BulletListener {
                 player.getPosY() + player.getSize() > invader.getPosY() + invader.getSize();
     }
 
+    /**
+     * Ha elfogytak az invaderek frissíti a szintet, vagy átvált a WinScreen-re
+     */
     private void updateLevel() {
         if (invaders.getInvaders().size() == 0 && currentLevel != 5) {
             currentLevel++;
@@ -229,16 +293,27 @@ public class Game implements Serializable, BulletListener {
         }
     }
 
+    /**
+     * Hozzáad egy ChangeWindow-t a listenerekhez
+     * @param listener ezt adja hozzá
+     */
     public void addWindowListener(ChangeWindow listener) {
         windowListeners.add(listener);
     }
 
+    /**
+     * Kitörli a listenereket
+     */
     public void clearWindowListeners() {
         windowListeners.clear();
     }
 
+    /**
+     * Szól a listenereknek hogy változnia kell az ablaknak
+     * @param state ez az amire változtatni kell
+     */
     private void changeWindow(Main.State state) {
-        if (player.getHealth() <= 0) {
+        if (player.getHealth() <= 0 || (currentLevel == 5 && invaders.getInvaders().size() == 0)) {
             new Database().saveGame(new Game(scene, screenWidth, screenHeight));
             player.setShooting(false);
             bullets.removeBullets();
@@ -249,13 +324,13 @@ public class Game implements Serializable, BulletListener {
             cw.changeWindow(state);
     }
 
+    /**
+     * Hozzáad egy lövedéket a lövedékekhez
+     * @param bullet ezt adja hozzá
+     */
     @Override
     public void addBullet(Bullet bullet) {
         bullets.addBullet(bullet);
-    }
-
-    public Invaders invaders() {
-        return invaders;
     }
 
     public Invaders getInvaders() {

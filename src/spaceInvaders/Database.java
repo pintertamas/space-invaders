@@ -4,8 +4,19 @@ import javafx.scene.Scene;
 
 import java.io.*;
 
+/**
+ * Célja a játékok elmentése és visszatöltése szerializált fájlból
+ */
 public class Database {
 
+    /**
+     * Visszatölti a játékot a game.ser fájlból
+     * Ha nincsen még ilyen, akkor létrehoz egy új játékot a
+     * @param scene az új játék Scene-je
+     * @param screenWidth a képernyő szélessége
+     * @param screenHeight a képernyő magassága
+     * @return a game.ser-ben tárolt játék, vagy egy új játék a fentebb említett paraméterekkel
+     */
     public Game loadGame(Scene scene, int screenWidth, int screenHeight) {
         File f = new File("game.ser");
         if (f.exists()) {
@@ -24,6 +35,10 @@ public class Database {
         return new Game(scene, screenWidth, screenHeight);
     }
 
+    /**
+     * Elmenti a játékot egy game.ser fájlba
+     * @param game a játék amit el akarunk menteni
+     */
     public void saveGame(Game game) {
         try {
             FileOutputStream fileOut = new FileOutputStream("game.ser");

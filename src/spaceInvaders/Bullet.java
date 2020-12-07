@@ -1,10 +1,16 @@
 package spaceInvaders;
 
+import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.io.Serializable;
 
+/**
+ * Ez az osztály a lövedékeket tárolja
+ * Azért abstract, mert van egy abstract update(int) függvénye
+ */
 public abstract class Bullet implements Serializable {
     protected final float posX;
     protected float posY;
@@ -12,10 +18,20 @@ public abstract class Bullet implements Serializable {
     protected final int speed;
     protected boolean isAlive;
 
+    /**
+     * A golyó typusa (ellenséges, vagy a játékosé-e)
+     */
     protected enum id {player, enemy}
 
     protected id bulletId;
 
+    /**
+     * A golyók konstruktora. Az alábbi paraméterek mellett beállítja, hogy a golyó "élve" jöjjön létre
+     * @param posX a golyó X pozíciója
+     * @param posY a golyó X y pozíciója
+     * @param size a golyó mérete
+     * @param speed a golyó sebessége
+     */
     Bullet(float posX, float posY, int size, int speed) {
         this.isAlive = true;
         this.posX = posX;
@@ -24,8 +40,16 @@ public abstract class Bullet implements Serializable {
         this.speed = speed;
     }
 
+    /**
+     * Ez a függvény frissíti a golyókat minden lefutásnál
+     * @param screenHeight a képernyő magassága
+     */
     public abstract void update(int screenHeight);
 
+    /**
+     * Megöli a golyót, ha az a képernyőn kívülre kerül
+     * @param screenHeight a képernyő magassága
+     */
     protected void killIfOutside(int screenHeight) {
         if (this.posY < 0 || this.posY > screenHeight)
             this.die();
@@ -47,12 +71,23 @@ public abstract class Bullet implements Serializable {
         return bulletId;
     }
 
+    /**
+     * Megöli a golyót
+     */
     public void die() {
         isAlive = false;
     }
 
-    public void drawBullet(GraphicsContext gc) {
+    /**
+     * Kirajzolja az adott lövedéket a helyére
+     * (Arra az esetre van, ha nem adnánk meg, hogy ellenséges, vagy játékos lövedéket lövünk ki)
+     * @param root ehhez a csoporthoz adja hozzá
+     */
+    public void drawBullet(Group root) {
         Image image = new Image("icons/bullet.png", getSize(), getSize(), true, true);
-        gc.drawImage(image, getPosX(), getPosY());
+        ImageView imageView = new ImageView(image);
+        imageView.setX(getPosX());
+        imageView.setY(getPosY());
+        root.getChildren().add(imageView);
     }
 }

@@ -11,17 +11,31 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
+/**
+ * Ez kezeli a megnyert játékok végén lévő képernyőt
+ */
 public class WinScreen {
     private final int screenWidth;
     private final int screenHeight;
     private final ArrayList<ChangeWindow> listeners;
 
+    /**
+     * Konstruktor, ami beállítja a képernyő magasságát és létrehozza a listenereket
+     * @param screenWidth a képernyő szélessége
+     * @param screenHeight a képernyő magassága
+     */
     public WinScreen(int screenWidth, int screenHeight) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.listeners = new ArrayList<>();
     }
 
+    /**
+     * Kirajzolja a játék végén mutatni kívánt elemeket
+     * @param root ehhez a csoporthoz adja hozzá
+     * @param canvas erre a canvasra rajzol
+     * @param gc ezzel rajzolja a hátteret
+     */
     public void showWinScreen(Group root, Canvas canvas, GraphicsContext gc) {
         setBackground(root, canvas, gc);
         Text youWonTextFront = new Text(45, 65, "YOU WON!");
@@ -48,6 +62,12 @@ public class WinScreen {
         root.getChildren().addAll(buttons);
     }
 
+    /**
+     * Kirajzolja a hátteret
+     * @param root ehhez a csoporthoz adja hozzá a vonalakat
+     * @param canvas erre a canvasra fest
+     * @param gc ezzel a GraphicsContext-tel rajzolja a szürke hátteret
+     */
     public void setBackground(Group root, Canvas canvas, GraphicsContext gc) {
         root.getChildren().clear();
         gc.setFill(Color.rgb(30, 30, 30));
@@ -55,10 +75,17 @@ public class WinScreen {
         root.getChildren().add(canvas);
     }
 
+    /**
+     * Hozzáad egy listenert a ChangeWindow listenerekhez
+     * @param listener ezt adja hozzá
+     */
     public void addListener(ChangeWindow listener) {
         listeners.add(listener);
     }
 
+    /**
+     * Szól a listenereknek hogy a menüre kell változnia az ablaknak
+     */
     private void switchState() {
         for (ChangeWindow cw : listeners)
             cw.changeWindow(Main.State.menu);

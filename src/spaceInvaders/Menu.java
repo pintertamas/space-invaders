@@ -11,17 +11,31 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
+/**
+ * Ez az osztály kezeli a menüt
+ */
 public class Menu {
     private final int screenWidth;
     private final int screenHeight;
     private final ArrayList<ChangeWindow> listeners;
 
+    /**
+     * Ez a konstruktora, ami beállítja a képernyő méreteit és létrehoz egy üres ArrayListet a listenereknek
+     * @param screenWidth a képernyő szélessége
+     * @param screenHeight a képernyő magassága
+     */
     public Menu(int screenWidth, int screenHeight) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.listeners = new ArrayList<>();
     }
 
+    /**
+     * Kirajzolja a menüt
+     * @param root ehhez a csoporthoz adja hozzá
+     * @param canvas erre a canvasra fest
+     * @param gc ezzel a GraphicsContext-tel rajzolja a szürke hátteret
+     */
     public void showMenu(Group root, Canvas canvas, GraphicsContext gc) {
         setBackground(root, canvas, gc);
         Text logoTextFront = new Text(45, 65, "SPACE INVADERS");
@@ -50,6 +64,12 @@ public class Menu {
         root.getChildren().addAll(buttons);
     }
 
+    /**
+     * Kirajzolja a hátteret
+     * @param root ehhez a csoporthoz adja hozzá a vonalakat
+     * @param canvas erre a canvasra fest
+     * @param gc ezzel a GraphicsContext-tel rajzolja a szürke hátteret
+     */
     public void setBackground(Group root, Canvas canvas, GraphicsContext gc) {
         root.getChildren().clear();
         gc.setFill(Color.rgb(30, 30, 30));
@@ -57,10 +77,17 @@ public class Menu {
         root.getChildren().add(canvas);
     }
 
+    /**
+     * Hozzáad egy listenert a ChangeWindow listenerekhez
+     * @param listener ezt adja hozzá
+     */
     public void addListener(ChangeWindow listener) {
         listeners.add(listener);
     }
 
+    /**
+     * Szól a listenereknek hogy változnia az ablaknak
+     */
     private void switchState(Main.State state) {
         for (ChangeWindow cw : listeners)
             cw.changeWindow(state);
