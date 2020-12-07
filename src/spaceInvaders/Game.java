@@ -88,14 +88,14 @@ public class Game implements Serializable, BulletListener {
         setBackground(root, canvas, gc);
         player.changeDirection(scene, screenWidth);
         player.movePlayer(screenWidth, screenHeight);
-        player.drawPlayer(root);
-        invaders.killIfDead();
         invaders.killIfOutside(screenHeight);
-        bullets.drawBullets(root);
+        invaders.removeIfDead();
         updateEntities();
-        invaders.drawInvaders(root);
-        bullets.updateBullets(screenHeight);
         bullets.removeCollidingBullets();
+        bullets.updateBullets(screenHeight);
+        bullets.drawBullets(root);
+        invaders.drawInvaders(root);
+        player.drawPlayer(root);
         drawHealth(root);
         drawCurrentLevel(root);
         saveButton(root);
@@ -232,9 +232,11 @@ public class Game implements Serializable, BulletListener {
                     invader.die();
                 }
                 if (bullets.getBullets().get(i).isAlive && bulletPlayerCollision(bullets.getBullets().get(i))) {
-                    for (int j = 0; j < player.getHealth(); j++)
-                        player.damage();
-                    changeWindow(Main.State.gameOver);
+                    bullets.getBullets().get(i).die();
+                    player.damage();
+                    if (player.getHealth() <= 0) {
+                        changeWindow(Main.State.gameOver);
+                    }
                 }
             }
             if (playerInvaderCollision(invader) && invader.isAlive()) {

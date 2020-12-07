@@ -66,7 +66,7 @@ public class Invaders implements Serializable {
     /**
      * Leszedi a listáról azt az invadert, amelyik meghalt már
      */
-    public void killIfDead() {
+    public void removeIfDead() {
         for (int i = 0; i < invaders.size(); i++) {
             if (!invaders.get(i).isAlive()) {
                 invaders.remove(invaders.get(i));
