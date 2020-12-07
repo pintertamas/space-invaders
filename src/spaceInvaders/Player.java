@@ -71,6 +71,10 @@ public class Player extends Figure implements Serializable {
         return health;
     }
 
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
     public int getSpeed() {
         return speed;
     }

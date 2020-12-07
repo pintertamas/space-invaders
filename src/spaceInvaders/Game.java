@@ -240,8 +240,9 @@ public class Game implements Serializable, BulletListener {
                 }
             }
             if (playerInvaderCollision(invader) && invader.isAlive()) {
-                player.damage();
+                player.setHealth(0);
                 invader.die();
+                changeWindow(Main.State.gameOver);
             }
         }
     }
@@ -282,10 +283,10 @@ public class Game implements Serializable, BulletListener {
      * @return ütköztek-e
      */
     public boolean playerInvaderCollision(Invader invader) {
-        return player.getPosX() > invader.getPosX() &&
-                player.getPosX() + player.getSize() < invader.getPosX() + invader.getSize() &&
-                player.getPosY() > invader.getPosY() &&
-                player.getPosY() + player.getSize() > invader.getPosY() + invader.getSize();
+        return (((player.getPosX() > invader.getPosX() &&
+                player.getPosX() < invader.getPosX() + invader.getSize()) ||
+                (player.getPosX() + player.getSize() > invader.getPosX() && player.getPosX() + player.getSize() < invader.getPosX() + invader.getSize())) &&
+                player.getPosY() < invader.getPosY() + invader.getSize());
     }
 
     /**
