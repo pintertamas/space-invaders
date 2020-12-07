@@ -31,7 +31,7 @@ public class Invader extends Figure implements Serializable {
      * Ad egy képet az invadernek véletlenszerűen
      */
     public void addImageToInvader() {
-        int randomImageIndex = new Random().nextInt(4) + 1;
+        int randomImageIndex = new Random().nextInt(5) + 1;
         setImg(new Image("icons/alien" + randomImageIndex + ".png", getSize(), getSize(), true, true));
     }
 
@@ -39,7 +39,7 @@ public class Invader extends Figure implements Serializable {
      * Frissíti az invader pozícióját
      */
     public void update() {
-        this.setPosY(getPosY() + speed);
+        this.setPosY(getPosY() + getSpeed());
     }
 
     /**

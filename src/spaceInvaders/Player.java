@@ -121,7 +121,7 @@ public class Player extends Figure implements Serializable {
                 dir = direction.left;
             } else if (code == KeyCode.D && getPosX() + getSize() < screenWidth - getSpeed()) {
                 dir = direction.right;
-            } else if (code == KeyCode.W) {
+            } else if (code == KeyCode.W && !shooting) {
                 shooting = true;
             }
         });
@@ -129,7 +129,7 @@ public class Player extends Figure implements Serializable {
             KeyCode code = keyEvent.getCode();
             if (code == KeyCode.D || code == KeyCode.A)
                 dir = direction.stand;
-            if (code == KeyCode.W) {
+            if (code == KeyCode.W && shooting) {
                 shooting = false;
             }
         });

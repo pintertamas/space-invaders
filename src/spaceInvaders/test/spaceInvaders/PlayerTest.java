@@ -3,10 +3,16 @@ package spaceInvaders;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Leteszteli a Player osztály függvényeit
+ */
 class PlayerTest {
 
     final Player player = new Player(100, 200, 10);
 
+    /**
+     * Teszt a konstruktorhoz
+     */
     @Test
     void createPlayer() {
         assertEquals(100, player.getPosX());
@@ -16,6 +22,9 @@ class PlayerTest {
         assertEquals(3, player.getHealth());
     }
 
+    /**
+     * Damage függvény tesztje
+     */
     @Test
     void damagePlayer() {
         assertEquals(3, player.getHealth());
@@ -23,6 +32,9 @@ class PlayerTest {
         assertEquals(2, player.getHealth());
     }
 
+    /**
+     * A player mozgását teszteli
+     */
     @Test
     void movePlayer() {
         assertEquals(100, player.getPosX());

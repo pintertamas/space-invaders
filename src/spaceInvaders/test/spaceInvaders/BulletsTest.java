@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Teszt esetek a Bullets osztályhoz
+ */
 class BulletsTest {
 
     final Bullet bullet1 = new PlayerBullet(100, 100, 30);
@@ -11,6 +14,9 @@ class BulletsTest {
     final Bullet bullet3 = new EnemyBullet(120, 129, 30);
     final Bullet bullet4 = new EnemyBullet(200, 200, 30);
 
+    /**
+     * Leteszteli a különböző bulletek ütközését
+     */
     @Test
     void bulletBulletCollision() {
         Bullets bullets = new Bullets();
@@ -19,6 +25,9 @@ class BulletsTest {
         assertFalse(bullets.checkBulletBulletCollision(bullet1, bullet4));
     }
 
+    /**
+     * Leteszteli a Bullets osztály addBullets függvényét
+     */
     @Test
     void addBullets() {
         Bullets bullets = new Bullets();
@@ -30,6 +39,9 @@ class BulletsTest {
         assertEquals(4, bullets.getBullets().size());
     }
 
+    /**
+     * Leteszteli a Bullets osztály removeBullet és removeBullets függvényét
+     */
     @Test
     void removeBullets() {
         Bullets bullets = new Bullets();

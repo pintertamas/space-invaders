@@ -106,7 +106,6 @@ public class Main extends Application implements ChangeWindow, Serializable {
                     if (random.nextInt(100) >= 90)
                         invader.shoot(new EnemyBullet(invader.getPosX() + invader.getSize() / 2.f - screenHeight / 60.f, invader.getPosY() + invader.getSize() + screenHeight / 30f + 10, screenHeight / 30));
                 }
-
             }
         }));
         timeline.setCycleCount(Animation.INDEFINITE);

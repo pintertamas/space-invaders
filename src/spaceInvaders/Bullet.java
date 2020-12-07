@@ -82,11 +82,5 @@ public abstract class Bullet implements Serializable {
      * (Arra az esetre van, ha nem adnánk meg, hogy ellenséges, vagy játékos lövedéket lövünk ki)
      * @param root ehhez a csoporthoz adja hozzá
      */
-    public void drawBullet(Group root) {
-        Image image = new Image("icons/bullet.png", getSize(), getSize(), true, true);
-        ImageView imageView = new ImageView(image);
-        imageView.setX(getPosX());
-        imageView.setY(getPosY());
-        root.getChildren().add(imageView);
-    }
+    public abstract void drawBullet(Group root);
 }

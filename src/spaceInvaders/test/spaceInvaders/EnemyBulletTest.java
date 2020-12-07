@@ -4,7 +4,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Leteszteli az EnemyBullet update metódusát
+ */
 class EnemyBulletTest {
+
     @Test
     void update() {
         Bullet bullet = new EnemyBullet(100, 200, 30);

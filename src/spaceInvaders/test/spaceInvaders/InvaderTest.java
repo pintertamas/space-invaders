@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Leteszteli az Invader osztály konstruktorát
+ */
 class InvaderTest {
 
     final Invader invader = new Invader(100, 200, 30);
