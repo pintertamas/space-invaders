@@ -74,11 +74,11 @@ public class Game implements Serializable, BulletListener {
         drawHealth(root);
         drawCurrentLevel(root);
         saveButton(root);
-        try {
+        /*try {
             Thread.sleep(5);
         } catch (Exception ex) {
             ex.printStackTrace();
-        }
+        }*/
     }
 
     private void setBackground(Group root, Canvas canvas, GraphicsContext gc) {
